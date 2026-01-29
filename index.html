@@ -24,7 +24,7 @@
 
         #starCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
 
-        /* --- 顶部导航 --- */
+        /* --- 顶部导航 (深色按钮) --- */
         .top-nav { position: absolute; top: 25px; left: 25px; z-index: 100; }
         .btn-home {
             background: var(--btn-dark);
@@ -66,7 +66,7 @@
         .btn-orange { background: #f28d35; color: #fff; box-shadow: 0 5px 15px rgba(242, 141, 53, 0.4); }
         .btn-outline { border: 2px solid #2c3e50; color: #2c3e50; }
 
-        /* 二维码容器增加文字引导 */
+        /* 二维码提示 */
         .qr-container { display: flex; flex-direction: column; align-items: center; gap: 8px; }
         .qr-seal {
             background: rgba(255, 255, 255, 0.85);
@@ -79,10 +79,10 @@
         .qr-seal img { width: 100%; border-radius: 4px; }
         .qr-tip { font-size: 12px; color: #5d6d7e; font-weight: 600; }
 
-        /* --- 3. UFO 系统 - 修复变形 --- */
-        .ufo-wrap { position: absolute; z-index: 5; animation: ufoFloat 6s ease-in-out infinite; display: flex; flex-direction: column; align-items: center; width: 250px; }
+        /* --- 3. UFO 系统 --- */
+        .ufo-wrap { position: absolute; z-index: 5; animation: ufoFloat 6s ease-in-out infinite; display: flex; flex-direction: column; align-items: center; width: 250px; will-change: transform; }
         .ufo-top { 
-            width: 110px; height: 70px; /* 固定宽高比 */
+            width: 110px; height: 70px;
             background: rgba(255, 255, 255, 0.15); border-radius: 60px 60px 0 0; 
             backdrop-filter: blur(1px); border: 2px solid rgba(255,255,255,0.3); 
             display: flex; align-items: flex-end; justify-content: center; position: relative; z-index: 4; 
@@ -90,12 +90,12 @@
         .monster { width: 40px; height: 46px; background: #6a2ca3; border-radius: 12px 12px 4px 4px; position: relative; z-index: 5; margin-bottom: 2px; }
         .monster::after { content: ''; position: absolute; width: 6px; height: 6px; background: #fff; border-radius: 50%; top: 11px; left: 10px; box-shadow: 15px 0 0 #fff; }
         .ufo-body { 
-            width: 250px; height: 70px; /* 固定高度防止扁平化 */
+            width: 250px; height: 70px;
             background: linear-gradient(to bottom, #bdc3c7, #5c6267); border-radius: 50%; 
             margin-top: -35px; display: flex; justify-content: center; align-items: center; gap: 12px; position: relative; z-index: 6; 
         }
-        .ufo-dot { width: 10px; height: 10px; border-radius: 50%; animation: lightBreath 6s infinite ease-in-out; }
-        .ufo-beam { width: 180px; height: 400px; clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%); margin: -10px auto 0; filter: blur(2px); animation: beamBreath 6s infinite ease-in-out; }
+        .ufo-dot { width: 10px; height: 10px; border-radius: 50%; animation: lightBreath 6s infinite ease-in-out; will-change: background; }
+        .ufo-beam { width: 180px; height: 400px; clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%); margin: -10px auto 0; filter: blur(2px); animation: beamBreath 6s infinite ease-in-out; will-change: background; }
 
         @keyframes lightBreath {
             0%, 100% { background: var(--color-red); box-shadow: 0 0 15px var(--color-red); opacity: 1; }
@@ -110,7 +110,7 @@
         }
         @keyframes ufoFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-35px); } }
 
-        /* 响应式适配 */
+        /* --- 响应式设计 --- */
         @media (min-width: 801px) {
             .moon-giant { top: 50%; left: -45vh; transform: translateY(-50%); width: 140vh; height: 140vh; padding-right: 18vh; }
             .content { width: 440px; text-align: left; }
@@ -124,8 +124,7 @@
             .download-zone { align-items: center; }
             .btn-group { justify-content: center; flex-direction: column; align-items: center; }
             .btn { width: 220px; }
-            /* 手机端隐藏二维码 */
-            .qr-container { display: none; }
+            .qr-container { display: none; } /* 手机端隐藏二维码 */
             .ufo-wrap { bottom: -20px; right: 50%; transform: translateX(50%); top: auto; scale: 0.7; }
             .c1 { display: none; }
         }
@@ -152,15 +151,15 @@
             
             <div class="download-zone">
                 <div class="btn-group">
-                    <a href="https://gh-proxy.org/https://github.com/asmrba/99app/releases/latest/download/app-release.apk" class="btn btn-orange">Android 点击下载</a>
-                    <a href="#" class="btn btn-outline">iOS 等待开发</a>
+                    <a href="https://gh-proxy.org/https://github.com/asmrba/99app/releases/latest/download/app-release.apk" class="btn btn-orange">Android 直接下载</a>
+                    <a href="#" class="btn btn-outline">iOS 邀请公测</a>
                 </div>
                 
                 <div class="qr-container">
                     <div class="qr-seal">
                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://gh-proxy.org/https://github.com/asmrba/99app/releases/latest/download/app-release.apk" alt="扫码下载">
                     </div>
-                    <span class="qr-tip">手机扫一扫下载</span>
+                    <span class="qr-tip">扫一扫下载</span>
                 </div>
             </div>
 
@@ -182,15 +181,33 @@
     <script>
         const canvas = document.getElementById('starCanvas');
         const ctx = canvas.getContext('2d');
-        let w, h;
-        function res() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
-        window.onresize = res; res();
-        const stars = Array.from({length: 100}, () => ({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.2, speed: 0.005+Math.random()*0.01 }));
+        let w, h, stars = [];
+        
+        function res() { 
+            w = canvas.width = window.innerWidth; 
+            h = canvas.height = window.innerHeight; 
+            // 手机端减少星星数量以加速
+            const count = w > 800 ? 100 : 50;
+            stars = Array.from({length: count}, () => ({ 
+                x: Math.random()*w, 
+                y: Math.random()*h, 
+                r: Math.random()*1.2, 
+                speed: 0.005+Math.random()*0.01 
+            }));
+        }
+        
+        window.onresize = res; 
+        res();
+
         function draw() {
-            ctx.fillStyle = '#0a0e14'; ctx.fillRect(0,0,w,h);
+            ctx.fillStyle = '#0a0e14'; 
+            ctx.fillRect(0,0,w,h);
             stars.forEach(s => {
                 ctx.globalAlpha = 0.2 + Math.abs(Math.sin(Date.now()*s.speed));
-                ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 7); ctx.fill();
+                ctx.fillStyle = '#fff'; 
+                ctx.beginPath(); 
+                ctx.arc(s.x, s.y, s.r, 0, 7); 
+                ctx.fill();
             });
             requestAnimationFrame(draw);
         }
