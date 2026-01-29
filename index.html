@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>99ASMR - 官方下载</title>
+    <style>
+        :root {
+            --bg-dark: #0a0e14;
+            --color-red: #ff3b3b;
+            --color-yellow: #f1c40f;
+            --color-green: #26de81;
+            --btn-dark: #1d252c;
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            height: 100%; width: 100%;
+            background-color: var(--bg-dark);
+            font-family: -apple-system, "PingFang SC", sans-serif;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        #starCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+
+        /* --- 顶部导航 --- */
+        .top-nav { position: absolute; top: 25px; left: 25px; z-index: 100; }
+        .btn-home {
+            background: var(--btn-dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 10px 22px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: 0.3s;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .btn-home:hover { background: #2c3e50; transform: translateY(-2px); border-color: #f28d35; }
+
+        /* --- 1. 3D 立体半月 --- */
+        .moon-giant {
+            position: absolute;
+            z-index: 2;
+            background: radial-gradient(circle at 75% 50%, #ffffff 0%, #e8e8e8 50%, #b0b0b0 100%);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: flex-end;
+            box-sizing: border-box;
+            box-shadow: 0 0 80px rgba(255, 255, 255, 0.2), inset -40px 0 100px rgba(0,0,0,0.1);
+            transition: all 0.5s ease;
+        }
+        .crater { position: absolute; background: rgba(0, 0, 0, 0.06); border-radius: 50%; box-shadow: inset 5px 5px 10px rgba(0,0,0,0.1), 2px 2px 5px rgba(255,255,255,0.7); }
+
+        /* --- 2. 内容区排版 --- */
+        .content { z-index: 10; transition: all 0.5s ease; position: relative; }
+        h1 { font-size: clamp(50px, 10vw, 88px); margin: 0; font-weight: 900; letter-spacing: -3px; line-height: 1; color: #2c3e50; }
+        .slogan { font-size: clamp(18px, 4vw, 28px); font-weight: 800; margin: 15px 0 10px; color: #2c3e50; }
+        .desc { font-size: 14px; color: #5d6d7e; line-height: 1.8; margin-bottom: 25px; }
+
+        .download-zone { display: flex; flex-direction: column; gap: 20px; align-items: flex-start; }
+        .btn-group { display: flex; gap: 12px; }
+        .btn { padding: 12px 35px; border-radius: 30px; text-decoration: none; font-size: 14px; font-weight: 800; transition: 0.3s; text-align: center; }
+        .btn-orange { background: #f28d35; color: #fff; box-shadow: 0 5px 15px rgba(242, 141, 53, 0.4); }
+        .btn-outline { border: 2px solid #2c3e50; color: #2c3e50; }
+
+        /* 二维码容器增加文字引导 */
+        .qr-container { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .qr-seal {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 8px; border-radius: 10px;
+            width: 100px; height: 100px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            backdrop-filter: blur(5px);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .qr-seal img { width: 100%; border-radius: 4px; }
+        .qr-tip { font-size: 12px; color: #5d6d7e; font-weight: 600; }
+
+        /* --- 3. UFO 系统 - 修复变形 --- */
+        .ufo-wrap { position: absolute; z-index: 5; animation: ufoFloat 6s ease-in-out infinite; display: flex; flex-direction: column; align-items: center; width: 250px; }
+        .ufo-top { 
+            width: 110px; height: 70px; /* 固定宽高比 */
+            background: rgba(255, 255, 255, 0.15); border-radius: 60px 60px 0 0; 
+            backdrop-filter: blur(1px); border: 2px solid rgba(255,255,255,0.3); 
+            display: flex; align-items: flex-end; justify-content: center; position: relative; z-index: 4; 
+        }
+        .monster { width: 40px; height: 46px; background: #6a2ca3; border-radius: 12px 12px 4px 4px; position: relative; z-index: 5; margin-bottom: 2px; }
+        .monster::after { content: ''; position: absolute; width: 6px; height: 6px; background: #fff; border-radius: 50%; top: 11px; left: 10px; box-shadow: 15px 0 0 #fff; }
+        .ufo-body { 
+            width: 250px; height: 70px; /* 固定高度防止扁平化 */
+            background: linear-gradient(to bottom, #bdc3c7, #5c6267); border-radius: 50%; 
+            margin-top: -35px; display: flex; justify-content: center; align-items: center; gap: 12px; position: relative; z-index: 6; 
+        }
+        .ufo-dot { width: 10px; height: 10px; border-radius: 50%; animation: lightBreath 6s infinite ease-in-out; }
+        .ufo-beam { width: 180px; height: 400px; clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%); margin: -10px auto 0; filter: blur(2px); animation: beamBreath 6s infinite ease-in-out; }
+
+        @keyframes lightBreath {
+            0%, 100% { background: var(--color-red); box-shadow: 0 0 15px var(--color-red); opacity: 1; }
+            33% { background: var(--color-yellow); box-shadow: 0 0 15px var(--color-yellow); opacity: 1; }
+            66% { background: var(--color-green); box-shadow: 0 0 15px var(--color-green); opacity: 1; }
+            16%, 49%, 82% { opacity: 0.3; }
+        }
+        @keyframes beamBreath {
+            0%, 100% { background: linear-gradient(to bottom, rgba(255, 59, 59, 0.35), transparent); }
+            33% { background: linear-gradient(to bottom, rgba(241, 196, 15, 0.35), transparent); }
+            66% { background: linear-gradient(to bottom, rgba(38, 222, 129, 0.35), transparent); }
+        }
+        @keyframes ufoFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-35px); } }
+
+        /* 响应式适配 */
+        @media (min-width: 801px) {
+            .moon-giant { top: 50%; left: -45vh; transform: translateY(-50%); width: 140vh; height: 140vh; padding-right: 18vh; }
+            .content { width: 440px; text-align: left; }
+            .ufo-wrap { top: 40%; right: 15%; }
+            .c1 { width: 100px; height: 100px; top: 20%; right: 30%; }
+        }
+
+        @media (max-width: 800px) {
+            .moon-giant { top: -20vh; left: 50%; transform: translateX(-50%); width: 100vh; height: 100vh; padding-top: 38vh; justify-content: center; align-items: flex-start; }
+            .content { width: 85%; text-align: center; }
+            .download-zone { align-items: center; }
+            .btn-group { justify-content: center; flex-direction: column; align-items: center; }
+            .btn { width: 220px; }
+            /* 手机端隐藏二维码 */
+            .qr-container { display: none; }
+            .ufo-wrap { bottom: -20px; right: 50%; transform: translateX(50%); top: auto; scale: 0.7; }
+            .c1 { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="starCanvas"></canvas>
+
+    <div class="top-nav">
+        <a href="https://www.99asmr.org" class="btn-home">← 官方首页</a>
+    </div>
+
+    <div class="moon-giant">
+        <div class="crater c1"></div>
+
+        <div class="content">
+            <h1>久久助眠</h1>
+            <div class="slogan">99ASMR</div>
+            <p class="desc">
+                当夜色深沉，万物静默。<br>
+                在流转的光影中，开启一段治愈梦境。
+            </p>
+            
+            <div class="download-zone">
+                <div class="btn-group">
+                    <a href="https://gh-proxy.org/https://github.com/asmrba/99app/releases/latest/download/app-release.apk" class="btn btn-orange">Android 点击下载</a>
+                    <a href="#" class="btn btn-outline">iOS 等待开发</a>
+                </div>
+                
+                <div class="qr-container">
+                    <div class="qr-seal">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://gh-proxy.org/https://github.com/asmrba/99app/releases/latest/download/app-release.apk" alt="扫码下载">
+                    </div>
+                    <span class="qr-tip">手机扫一扫下载</span>
+                </div>
+            </div>
+
+            <p style="font-size: 11px; color: #99a; margin-top: 35px; font-weight: 600;">CREATED DATE / JANUARY 29, 2026</p>
+        </div>
+    </div>
+
+    <div class="ufo-wrap">
+        <div class="ufo-top"><div class="monster"></div></div>
+        <div class="ufo-body">
+            <div class="ufo-dot"></div>
+            <div class="ufo-dot" style="animation-delay: 0.1s"></div>
+            <div class="ufo-dot" style="animation-delay: 0.2s"></div>
+            <div class="ufo-dot" style="animation-delay: 0.3s"></div>
+        </div>
+        <div class="ufo-beam"></div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('starCanvas');
+        const ctx = canvas.getContext('2d');
+        let w, h;
+        function res() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+        window.onresize = res; res();
+        const stars = Array.from({length: 100}, () => ({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.2, speed: 0.005+Math.random()*0.01 }));
+        function draw() {
+            ctx.fillStyle = '#0a0e14'; ctx.fillRect(0,0,w,h);
+            stars.forEach(s => {
+                ctx.globalAlpha = 0.2 + Math.abs(Math.sin(Date.now()*s.speed));
+                ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 7); ctx.fill();
+            });
+            requestAnimationFrame(draw);
+        }
+        draw();
+    </script>
+</body>
+</html>
