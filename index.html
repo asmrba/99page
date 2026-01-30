@@ -174,22 +174,31 @@
         const isIos = /iPhone|iPad|iPod/i.test(UA);
         const isSafari = /^((?!chrome|android).)*safari/i.test(UA);
 
-        // --- [分流与启动控制] ---
+// --- [修正后的启动与分流控制] ---
         (function() {
             const urlParams = new URLSearchParams(window.location.search);
             const isPwaLaunch = urlParams.get('mode') === 'pwa' || window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
             
             if (isPwaLaunch) {
-                // 1. 立即显示启动页，防止白屏
+                // 1. 立即显示启动页
                 document.getElementById('pwa-launch-screen').style.display = 'flex';
                 
-                // 2. 1秒后展示骨架屏，模拟加载中
+                // 2. 检查网络状态
+                if (!navigator.onLine) {
+                    // 如果没网，停止跳转逻辑，Service Worker 会接管并显示 offline.html
+                    console.log("离线模式：停止跳转");
+                    setTimeout(() => {
+                        window.location.href = "/offline.html"; 
+                    }, 500);
+                    return;
+                }
+
+                // 3. 有网则显示骨架屏并跳转
                 setTimeout(() => {
                     document.getElementById('pwa-launch-screen').style.display = 'none';
                     document.getElementById('skeleton-screen').style.display = 'block';
                 }, 1000);
 
-                // 3. 请求网关并跳转
                 fetch(GATEWAY_API).then(r => r.json()).then(d => { 
                     if(d.pwa_url) window.location.replace(d.pwa_url); 
                 }).catch(() => { 
