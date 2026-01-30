@@ -1,4 +1,4 @@
-const CACHE_NAME = '99asmr-v2.0'; // 每次更新代码请修改此版本号
+const CACHE_NAME = '99asmr-v2.5'; // 每次更新代码请修改此版本号
 const OFFLINE_URL = '/offline.html';
 
 const ASSETS = [
@@ -39,3 +39,4 @@ self.addEventListener('fetch', (event) => {
     );
   }
 });
+
