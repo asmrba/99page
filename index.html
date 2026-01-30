@@ -29,20 +29,7 @@
             touch-action: none;
         }
 
-        /* --- [1. 骨架屏] 保持原样 --- */
-        #skeleton-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #0a0e14; z-index: 1000001; display: none; padding: 30px; box-sizing: border-box;
-        }
-        .sk-item { background: #1d252c; border-radius: 12px; margin-bottom: 20px; position: relative; overflow: hidden; }
-        .sk-item::after {
-            content: ""; position: absolute; top: 0; left: -150%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
-            animation: sk-load 1.5s infinite;
-        }
-        @keyframes sk-load { from { left: -150%; } to { left: 150%; } }
-
-        /* --- [2. 启动页遮罩] 保持原样 --- */
+        /* --- [1. 启动页遮罩] --- */
         #pwa-launch-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #0a0e14; z-index: 1000002; display: none; flex-direction: column; align-items: center; justify-content: center;
@@ -51,7 +38,7 @@
         @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } }
         .launch-text { color: #fff; font-size: 18px; font-weight: bold; letter-spacing: 2px; }
 
-        /* --- [3. 更新气泡] 保持原样 --- */
+        /* --- [2. 更新气泡] --- */
         #update-toast {
             position: fixed; bottom: 30px; right: 20px; background: var(--color-orange); color: #fff;
             padding: 12px 22px; border-radius: 50px; font-size: 13px; font-weight: bold;
@@ -60,7 +47,7 @@
         }
         @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* UI 样式部分 */
+        /* UI 布局 */
         #starCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
         .top-nav { position: absolute; top: 25px; left: 25px; z-index: 100; }
         .btn-home { background: var(--btn-dark); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 10px 22px; border-radius: 25px; text-decoration: none; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
@@ -84,10 +71,10 @@
             z-index: 1000; display: flex; flex-direction: column; align-items: center; gap: 8px;
         }
         .qr-popover img { width: 120px; height: 120px; border-radius: 8px; background: #fff; padding: 4px; }
-        .qr-popover span { color: #fff; font-size: 11px; white-space: nowrap; font-weight: 600; }
+        .qr-popover span { color: #fff; font-size: 11px; font-weight: 800; }
         .android-download-wrapper:hover .qr-popover { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
 
-        /* --- [iOS 强导遮罩] 结构保留 --- */
+        /* --- [iOS 遮罩] --- */
         #ios-pwa-mask { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; backdrop-filter: blur(8px); }
         .ios-guide-card { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 380px; background: #fff; border-radius: 20px; padding: 25px; text-align: center; box-sizing: border-box; }
         .step-id { background: var(--color-orange); color: #fff; width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-right: 12px; }
@@ -100,12 +87,10 @@
         .ufo-dot { width: 10px; height: 10px; border-radius: 50%; animation: lightBreath 6s infinite ease-in-out; }
         .ufo-beam { width: 180px; height: 300px; clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%); margin: -10px auto 0; filter: blur(2px); animation: beamBreath 6s infinite ease-in-out; }
 
-        @keyframes lightBreath { 0%, 100% { background: var(--color-red); } 33% { background: var(--color-yellow); } 66% { background: var(--color-green); } }
-        @keyframes beamBreath { 0%, 100% { background: linear-gradient(to bottom, rgba(255, 59, 59, 0.35), transparent); } 33% { background: linear-gradient(to bottom, rgba(241, 196, 15, 0.35), transparent); } 66% { background: linear-gradient(to bottom, rgba(38, 222, 129, 0.35), transparent); } }
         @keyframes ufoFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-35px); } }
 
         @media (min-width: 801px) { .moon-giant { top: 50%; left: -45vh; transform: translateY(-50%); width: 140vh; height: 140vh; padding-right: 18vh; } .content { width: 460px; text-align: left; } .ufo-wrap { top: 40%; right: 15%; } }
-        @media (max-width: 800px) { .moon-giant { top: -20vh; left: 50%; transform: translateX(-50%); width: 100vh; height: 100vh; padding-top: 38vh; justify-content: center; align-items: flex-start; } .content { width: 85%; text-align: center; } .download-zone { align-items: center; } .btn-group { flex-direction: column; align-items: center; } .qr-popover { display: none; } .ufo-wrap { bottom: -20px; right: 50%; transform: translateX(50%); top: auto; scale: 0.7; } }
+        @media (max-width: 800px) { .moon-giant { top: -20vh; left: 50%; transform: translateX(-50%); width: 100vh; height: 100vh; padding-top: 38vh; justify-content: center; align-items: flex-start; } .content { width: 85%; text-align: center; } .btn-group { flex-direction: column; align-items: center; } .qr-popover { display: none; } .ufo-wrap { bottom: -20px; right: 50%; transform: translateX(50%); top: auto; scale: 0.7; } }
     </style>
 </head>
 <body>
@@ -135,7 +120,7 @@
                     <div class="android-download-wrapper">
                         <div class="qr-popover">
                             <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://gh-proxy.org/https://github.com/asmrba/99app/releases/download/v1.0.1/app-arm64-v8a-release.apk">
-                            <span style="color: #000; font-size: 11px; font-weight: 800;">手机扫码 极速下载</span>
+                            <span>手机扫码 极速下载</span>
                         </div>
                         <a id="android-btn" href="https://gh-proxy.org/https://github.com/asmrba/99app/releases/download/v1.0.1/app-arm64-v8a-release.apk" class="btn btn-orange">
                             Android 立即下载
@@ -145,7 +130,6 @@
                 </div>
                 <p id="env-tip" style="margin-top: 15px; font-size: 13px; color: #f28d35; font-weight: 600;"></p>
             </div>
-            <p style="font-size: 11px; color: #99a; margin-top: 35px; font-weight: 600;">CREATED DATE / JANUARY 30, 2026</p>
         </div>
     </div>
 
@@ -164,38 +148,36 @@
         const safariIcon = `<svg style="width:22px; height:22px; vertical-align:middle; margin:0 2px;" viewBox="0 0 1024 1024"><path d="M736 448v128c0 17.7-14.3 32-32 32s-32-14.3-32-32V448c0-53-43-96-96-96H256c-53 0-96 43-96 96v320c0 53 43 96 96 96h320c53 0 96-43 96-96V704c0-17.7 14.3-32 32-32s32 14.3 32 32v64c0 88.4-71.6 160-160 160H256c-88.4 0-160-71.6-160-160V448c0-88.4 71.6-160 160-160h320c88.4 0 160 71.6 160 160z" fill="#007AFF"></path><path d="M480 96c0-17.7 14.3-32 32-32s32 14.3 32 32v416c0 17.7-14.3 32-32 32s-32-14.3-32-32V96z" fill="#007AFF"></path><path d="M512 64l-128 128c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L512 157.3l82.7 82.7c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L512 64z" fill="#007AFF"></path></svg>`;
 
         const UA = navigator.userAgent;
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(UA);
         const isIos = /iPhone|iPad|iPod/i.test(UA);
-        // 【核心精准逻辑】只要不是原生 Safari（包含微信、QQ、QQ浏览器等），全部视为非 Safari
         const isSafari = /Safari/i.test(UA) && !/Chrome|CriOS|Android|MQQBrowser|UCBrowser|Quark|Baiduboxapp|EdgiOS|FxiOS|Opt\/|MicroMessenger|QQ\//i.test(UA);
+        
+        let deferredPrompt = null;
 
         function handleAppUpdate() {
-            const toast = document.getElementById('update-toast');
-            if (toast) toast.innerText = "🚀 正在升级线路...";
             fetch(GATEWAY_API).then(r => r.json()).then(d => {
                 if(d.pwa_url) window.location.replace(d.pwa_url); else location.reload();
             });
         }
 
         function copyUrl() {
-            const el = document.createElement('textarea');
-            el.value = window.location.href;
-            document.body.appendChild(el);
-            el.select();
-            document.execCommand('copy');
-            document.body.removeChild(el);
-            alert("网址已复制成功！\n请立即打开手机自带的 Safari 浏览器粘贴访问。");
+            const el = document.createElement('textarea'); el.value = window.location.href; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
+            alert("网址已复制成功！请手动打开 Safari 粘贴访问。");
         }
 
-        /* --- [PWA 自动跳转与启动页] 保留 --- */
         (function() {
             const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
             if (isStandalone) {
                 document.getElementById('pwa-launch-screen').style.display = 'flex';
-                fetch(GATEWAY_API).then(r => r.json()).then(d => { 
-                    if(d.pwa_url) window.location.replace(d.pwa_url); 
-                });
+                fetch(GATEWAY_API).then(r => r.json()).then(d => { if(d.pwa_url) window.location.replace(d.pwa_url); });
             }
         })();
+
+        // 桌面端 Chrome/Edge 安装监听
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
 
         window.onload = function() {
             const pwaBtn = document.getElementById('pwa-btn');
@@ -204,69 +186,50 @@
             const tip = document.getElementById('env-tip');
             const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
 
-            // --- iOS 环境强导：非 Safari 即弹出“复制网址” ---
-            if (isIos && !isStandalone) {
+            // --- 核心修正：仅在 iOS 移动端且未安装时执行强导 ---
+            if (isIos && isMobile && !isStandalone) {
                 if (!isSafari) {
                     iosContent.innerHTML = `
                         <img src="/icon-192.png" style="width:60px; border-radius:14px; margin-bottom:15px;">
                         <h3 style="color:#333; margin-bottom:10px;">请使用 Safari 访问</h3>
-                        <p style="font-size:14px; color:#666; margin-bottom:20px;">检测到非原生环境，无法直接安装。请复制网址后切换至系统自带的 Safari 访问。</p>
-                        <button style="background:#333; color:#fff; border:none; width:100%; padding:15px; border-radius:15px; font-weight:bold; margin-bottom:15px; cursor:pointer;" onclick="copyUrl()">一键复制网址</button>
-                        <button style="background:transparent; color:#999; border:none; width:100%; font-size:12px; cursor:pointer;" onclick="iosMask.style.display='none'">我知道了</button>
+                        <p style="font-size:14px; color:#666; margin-bottom:20px;">检测到非原生环境，无法直接安装。请复制网址后切换至 Safari 访问。</p>
+                        <button style="background:#333; color:#fff; border:none; width:100%; padding:15px; border-radius:15px; font-weight:bold; margin-bottom:15px;" onclick="copyUrl()">一键复制网址</button>
+                        <button style="background:transparent; color:#999; border:none; width:100%; font-size:12px;" onclick="iosMask.style.display='none'">我知道了</button>
                     `;
                     setTimeout(() => iosMask.style.display = 'block', 800);
                     tip.innerText = "⚠️ 请复制网址并使用 Safari 浏览器打开";
                 }
             }
 
-            pwaBtn.onclick = () => {
-                if (isIos) {
+            pwaBtn.onclick = async () => {
+                if (isIos && isMobile) {
+                    // iOS 手机版：显示指引
                     if (!isSafari) {
                         iosMask.style.display = 'block';
                     } else {
-                        // 真正 Safari 下点击按钮显示的安装指引
                         iosContent.innerHTML = `
                             <img src="/icon-192.png" style="width:60px; border-radius:14px; margin-bottom:15px;">
                             <h3 style="color:#333; margin-bottom:15px;">安装 99ASMR 到桌面</h3>
                             <div style="text-align:left; background:#f9f9f9; padding:20px; border-radius:18px; margin-bottom:25px;">
-                                <div style="margin-bottom:15px; display:flex; align-items:flex-start;">
-                                    <span class="step-id">1</span>
-                                    <p style="margin:0; font-size:14px; color:#333;">点击底部的“分享”图标 ${safariIcon}</p>
-                                </div>
-                                <div style="margin-bottom:15px; display:flex; align-items:flex-start;">
-                                    <span class="step-id">2</span>
-                                    <p style="margin:0; font-size:14px; color:#333;">向下滚动并点击 <b>“添加到主屏幕”</b></p>
-                                </div>
-                                <div style="display:flex; align-items:flex-start;">
-                                    <span class="step-id">3</span>
-                                    <p style="margin:0; font-size:14px; color:#333;">点击右上角的 <b>“添加”</b> 即可</p>
-                                </div>
+                                <div style="margin-bottom:15px; display:flex; align-items:flex-start;"><span class="step-id">1</span><p style="margin:0; font-size:14px; color:#333;">点击底部的“分享”图标 ${safariIcon}</p></div>
+                                <div style="margin-bottom:15px; display:flex; align-items:flex-start;"><span class="step-id">2</span><p style="margin:0; font-size:14px; color:#333;">向下滚动并点击 <b>“添加到主屏幕”</b></p></div>
+                                <div style="display:flex; align-items:flex-start;"><span class="step-id">3</span><p style="margin:0; font-size:14px; color:#333;">点击右上角的 <b>“添加”</b> 即可</p></div>
                             </div>
                             <button style="background:var(--color-orange); color:#fff; border:none; width:100%; padding:15px; border-radius:15px; font-weight:bold;" onclick="iosMask.style.display='none'">准备好了</button>
                         `;
                         iosMask.style.display = 'block';
                     }
+                } else if (deferredPrompt) {
+                    // 核心修正：桌面端 Chrome/Edge 点击直接安装
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') deferredPrompt = null;
                 } else {
-                    alert("Android 用户请直接点击 Android 按钮下载 APK 即可。");
+                    alert("请点击浏览器地址栏右侧的 [安装] 图标");
                 }
             };
-
-            /* --- [Service Worker 更新提醒] 保留 --- */
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/sw.js').then(reg => {
-                    reg.onupdatefound = () => {
-                        const worker = reg.installing;
-                        worker.onstatechange = () => {
-                            if (worker.state === 'installed' && navigator.serviceWorker.controller) {
-                                document.getElementById('update-toast').style.display = 'block';
-                            }
-                        };
-                    };
-                });
-            }
         };
 
-        /* --- [星空背景绘制] 保留 --- */
         const canvas = document.getElementById('starCanvas');
         const ctx = canvas.getContext('2d');
         let w, h, stars = [];
