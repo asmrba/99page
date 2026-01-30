@@ -112,7 +112,7 @@
         <div style="color:#555; font-size:12px; margin-top:15px;">安全线路加密连接中...</div>
     </div>
 
-    <div id="update-toast" onclick="location.reload()">✨ 发现新版本，点击立即体验</div>
+    <div id="update-toast" onclick="handleAppUpdate()">✨ 发现新版本，点击立即体验</div>
 
     <canvas id="starCanvas"></canvas>
 
@@ -163,7 +163,7 @@
     </div>
 
     <script>
-        // --- 1. 全局变量定义 ---
+        // --- 1. 全局配置 ---
         const GATEWAY_API = "https://api.999551.xyz/";
         const UA = navigator.userAgent;
         const isWechat = /MicroMessenger/i.test(UA);
@@ -171,7 +171,23 @@
         const isSafari = /^((?!chrome|android).)*safari/i.test(UA);
         let deferredPrompt = null;
 
-        // --- 2. PWA 启动分流控制 ---
+        // --- 2. 升级处理函数 (放在全局) ---
+        function handleAppUpdate() {
+            const toast = document.getElementById('update-toast');
+            if (toast) toast.innerText = "🚀 正在升级线路...";
+            
+            fetch(GATEWAY_API).then(r => r.json()).then(d => {
+                if(d.pwa_url) {
+                    setTimeout(() => {
+                        window.location.replace(d.pwa_url);
+                    }, 800);
+                } else {
+                    location.reload();
+                }
+            }).catch(() => location.reload());
+        }
+
+        // --- 3. PWA 启动分流控制 ---
         (function() {
             const urlParams = new URLSearchParams(window.location.search);
             const isPwaLaunch = urlParams.get('mode') === 'pwa' || window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
@@ -200,7 +216,7 @@
             }
         })();
 
-        // --- 3. 动画与UI初始化 ---
+        // --- 4. 动画初始化 ---
         const canvas = document.getElementById('starCanvas');
         const ctx = canvas.getContext('2d');
         let w, h, stars = [];
@@ -225,7 +241,7 @@
         }
         draw();
 
-        // --- 4. 核心逻辑：安装引导与更新检测 ---
+        // --- 5. 核心逻辑：安装引导与更新检测 ---
         window.addEventListener('beforeinstallprompt', (e) => { 
             e.preventDefault(); 
             deferredPrompt = e; 
@@ -242,7 +258,7 @@
 
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/sw.js').then(reg => {
-                    reg.update(); // 强力检查更新
+                    reg.update(); 
                     reg.onupdatefound = () => {
                         const worker = reg.installing;
                         worker.onstatechange = () => {
@@ -252,9 +268,6 @@
                             }
                         };
                     };
-                });
-                navigator.serviceWorker.addEventListener('controllerchange', () => {
-                    console.log("新版本已激活");
                 });
             }
 
