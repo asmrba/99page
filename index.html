@@ -39,7 +39,7 @@
         @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } }
         .launch-text { color: #fff; font-size: 18px; font-weight: bold; letter-spacing: 2px; }
 
-        /* --- [更新气泡] --- */
+        /* --- [更新提醒] --- */
         #update-toast {
             position: fixed; bottom: 30px; right: 20px; background: var(--color-orange); color: #fff;
             padding: 12px 22px; border-radius: 50px; font-size: 13px; font-weight: bold;
@@ -48,11 +48,10 @@
         }
         @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* --- UI 布局 --- */
+        /* --- UI 样式 --- */
         #starCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
         .top-nav { position: absolute; top: 25px; left: 25px; z-index: 100; }
         .btn-home { background: var(--btn-dark); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 10px 22px; border-radius: 25px; text-decoration: none; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
-        
         .moon-giant { position: absolute; z-index: 2; background: radial-gradient(circle at 75% 50%, #ffffff 0%, #e8e8e8 50%, #b0b0b0 100%); border-radius: 50%; display: flex; align-items: center; justify-content: flex-end; box-sizing: border-box; box-shadow: 0 0 80px rgba(255, 255, 255, 0.2); }
         .content { z-index: 10; position: relative; }
         h1 { font-size: clamp(50px, 10vw, 88px); margin: 0; font-weight: 900; color: #2c3e50; }
@@ -64,14 +63,13 @@
         .btn-orange { background: var(--color-orange); color: #fff; box-shadow: 0 5px 15px rgba(242, 141, 53, 0.4); }
         .btn-outline { border: 2px solid #2c3e50; color: #2c3e50; background: transparent; }
 
-        /* 二维码气泡 */
+        /* 二维码 */
         .android-download-wrapper { position: relative; display: inline-block; }
         .qr-popover {
             position: absolute; bottom: calc(100% + 15px); left: 50%; transform: translateX(-50%) translateY(10px);
             background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
             padding: 12px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            opacity: 0; visibility: hidden; transition: 0.3s;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5); opacity: 0; visibility: hidden; transition: 0.3s;
             z-index: 1000; display: flex; flex-direction: column; align-items: center; gap: 8px;
         }
         .qr-popover img { width: 120px; height: 120px; border-radius: 8px; background: #fff; padding: 4px; }
@@ -83,7 +81,7 @@
         .ios-guide-card { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; background: #fff; border-radius: 24px; padding: 30px 25px; text-align: center; box-sizing: border-box; }
         .step-id { background: var(--color-orange); color: #fff; width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 12px; flex-shrink: 0; }
         
-        /* UFO 动画 */
+        /* UFO */
         .ufo-wrap { position: absolute; z-index: 5; animation: ufoFloat 6s ease-in-out infinite; display: flex; flex-direction: column; align-items: center; width: 250px; }
         .ufo-top { width: 110px; height: 70px; background: rgba(255, 255, 255, 0.15); border-radius: 60px 60px 0 0; backdrop-filter: blur(1px); border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: flex-end; justify-content: center; position: relative; z-index: 4; }
         .monster { width: 40px; height: 46px; background: #6a2ca3; border-radius: 12px 12px 4px 4px; position: relative; z-index: 5; }
@@ -151,13 +149,16 @@
 
     <script>
         const GATEWAY_API = "https://api.999551.xyz/";
-        // Safari 蓝色分享图标 SVG
         const safariIcon = `<svg style="width:22px; height:22px; vertical-align:middle; margin:0 2px;" viewBox="0 0 1024 1024"><path d="M736 448v128c0 17.7-14.3 32-32 32s-32-14.3-32-32V448c0-53-43-96-96-96H256c-53 0-96 43-96 96v320c0 53 43 96 96 96h320c53 0 96-43 96-96V704c0-17.7 14.3-32 32-32s32 14.3 32 32v64c0 88.4-71.6 160-160 160H256c-88.4 0-160-71.6-160-160V448c0-88.4 71.6-160 160-160h320c88.4 0 160 71.6 160 160z" fill="#007AFF"></path><path d="M480 96c0-17.7 14.3-32 32-32s32 14.3 32 32v416c0 17.7-14.3 32-32 32s-32-14.3-32-32V96z" fill="#007AFF"></path><path d="M512 64l-128 128c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L512 157.3l82.7 82.7c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L512 64z" fill="#007AFF"></path></svg>`;
 
         const UA = navigator.userAgent;
-        const isInApp = /MicroMessenger|QQ\//i.test(UA); // 微信、QQ、内置QQ浏览器
+        // 1. 精准捕捉微信和 QQ 内部环境
+        const isInApp = /MicroMessenger|QQ\//i.test(UA); 
         const isIos = /iPhone|iPad|iPod/i.test(UA);
-        const isSafari = /^((?!chrome|android|crios|fxios|opt|quark|ubrowser|ucbrowser|baidubrowser).)*safari/i.test(UA);
+        
+        // 2. 【核心优化】精准判定原生 Safari
+        // 必须包含 Safari 字符串，且排除所有已知的第三方 iOS 浏览器特征码（包括 QQ 浏览器的 MQQBrowser）
+        const isSafari = /Safari/i.test(UA) && !/Chrome|CriOS|Android|MQQBrowser|UCBrowser|Quark|Baiduboxapp|EdgiOS|FxiOS|Opt\//i.test(UA);
 
         function handleAppUpdate() {
             fetch(GATEWAY_API).then(r => r.json()).then(d => {
@@ -182,16 +183,15 @@
             const tip = document.getElementById('env-tip');
             const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
 
-            // --- iOS 自动检测强引导 ---
             if (isIos && !isStandalone) {
                 if (isInApp) {
-                    // 情况1：微信/QQ 内部引导
+                    // 情况1：微信/QQ 内部强提示
                     iosContent.innerHTML = `
                         <img src="/icon-192.png" style="width:60px; border-radius:14px; margin-bottom:15px;">
                         <h3 style="color:#333; margin-bottom:10px;">请在 Safari 中打开</h3>
-                        <p style="font-size:14px; color:#666; margin-bottom:20px;">当前环境无法安装，请按指引切换：</p>
+                        <p style="font-size:14px; color:#666; margin-bottom:20px;">当前环境无法直接安装，请操作：</p>
                         <div style="text-align:left; background:#f0f7ff; padding:18px; border-radius:15px; margin-bottom:20px; border:1px solid #cce5ff;">
-                            <p style="margin:0 0 10px 0; color:#444;">1. 点击屏幕 <b>右上角 [...]</b></p>
+                            <p style="margin:0 0 8px 0; color:#444;">1. 点击屏幕 <b>右上角 [...]</b></p>
                             <p style="margin:0; color:#444;">2. 选择 <b>[在 Safari 中打开]</b></p>
                         </div>
                         <button style="background:var(--color-orange); color:#fff; border:none; width:100%; padding:15px; border-radius:15px; font-weight:bold; cursor:pointer;" onclick="iosMask.style.display='none'">我知道了</button>
@@ -199,7 +199,7 @@
                     setTimeout(() => iosMask.style.display = 'block', 800);
                     tip.innerText = "⚠️ 请点击右上角使用 Safari 浏览器打开";
                 } else if (!isSafari) {
-                    // 情况2：其他非 Safari 浏览器引导复制
+                    // 情况2：其他非 Safari 浏览器 (包括 QQ 浏览器、Chrome、边缘浏览器等)
                     iosContent.innerHTML = `
                         <img src="/icon-192.png" style="width:60px; border-radius:14px; margin-bottom:15px;">
                         <h3 style="color:#333; margin-bottom:10px;">需切换至 Safari</h3>
@@ -217,7 +217,7 @@
                     if (isInApp || !isSafari) {
                         iosMask.style.display = 'block';
                     } else {
-                        // 情况3：原生 Safari 细致安装教程
+                        // 情况3：原生 Safari 细致教程
                         iosContent.innerHTML = `
                             <img src="/icon-192.png" style="width:60px; border-radius:14px; margin-bottom:15px;">
                             <h3 style="color:#333; margin-bottom:15px;">安装 99ASMR 到桌面</h3>
@@ -240,12 +240,12 @@
                         iosMask.style.display = 'block';
                     }
                 } else {
-                    alert("Android 用户请点击左侧按钮直接下载 APK 即可。");
+                    alert("请在 Chrome 浏览器菜单中选择 [安装应用]");
                 }
             };
         };
 
-        // 星空背景逻辑
+        // 星空画布背景
         const canvas = document.getElementById('starCanvas');
         const ctx = canvas.getContext('2d');
         let w, h, stars = [];
