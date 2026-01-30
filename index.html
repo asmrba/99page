@@ -29,7 +29,7 @@
             touch-action: none;
         }
 
-        /* --- [骨架屏] --- */
+        /* --- [1. 骨架屏] 保持原样 --- */
         #skeleton-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #0a0e14; z-index: 1000001; display: none; padding: 30px; box-sizing: border-box;
@@ -42,7 +42,7 @@
         }
         @keyframes sk-load { from { left: -150%; } to { left: 150%; } }
 
-        /* --- [启动页] --- */
+        /* --- [2. 启动页遮罩] 保持原样 --- */
         #pwa-launch-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #0a0e14; z-index: 1000002; display: none; flex-direction: column; align-items: center; justify-content: center;
@@ -51,7 +51,7 @@
         @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } }
         .launch-text { color: #fff; font-size: 18px; font-weight: bold; letter-spacing: 2px; }
 
-        /* --- [更新气泡] --- */
+        /* --- [3. 更新气泡] 保持原样 --- */
         #update-toast {
             position: fixed; bottom: 30px; right: 20px; background: var(--color-orange); color: #fff;
             padding: 12px 22px; border-radius: 50px; font-size: 13px; font-weight: bold;
@@ -60,7 +60,7 @@
         }
         @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* --- 背景与导航 --- */
+        /* UI 样式部分 */
         #starCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
         .top-nav { position: absolute; top: 25px; left: 25px; z-index: 100; }
         .btn-home { background: var(--btn-dark); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 10px 22px; border-radius: 25px; text-decoration: none; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
@@ -75,7 +75,6 @@
         .btn-orange { background: var(--color-orange); color: #fff; box-shadow: 0 5px 15px rgba(242, 141, 53, 0.4); }
         .btn-outline { border: 2px solid #2c3e50; color: #2c3e50; background: transparent; }
 
-        /* 二维码 */
         .android-download-wrapper { position: relative; display: inline-block; }
         .qr-popover {
             position: absolute; bottom: calc(100% + 15px); left: 50%; transform: translateX(-50%) translateY(10px);
@@ -88,7 +87,7 @@
         .qr-popover span { color: #fff; font-size: 11px; white-space: nowrap; font-weight: 600; }
         .android-download-wrapper:hover .qr-popover { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
 
-        /* --- [iOS 核心遮罩] --- */
+        /* --- [iOS 强导遮罩] 结构保留 --- */
         #ios-pwa-mask { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; backdrop-filter: blur(8px); }
         .ios-guide-card { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 380px; background: #fff; border-radius: 20px; padding: 25px; text-align: center; box-sizing: border-box; }
         .step-id { background: var(--color-orange); color: #fff; width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-right: 12px; }
@@ -116,7 +115,7 @@
     <div id="pwa-launch-screen">
         <img src="/icon-512.png" class="launch-logo">
         <div class="launch-text">99ASMR</div>
-        <div style="color:#555; font-size:12px; margin-top:15px;">安全线路加密连接中...</div>
+        <div style="color:#555; font-size:12px; margin-top:15px;">加密链路连接中...</div>
     </div>
 
     <div id="update-toast" onclick="handleAppUpdate()">✨ 发现新版本，点击立即体验</div>
@@ -129,7 +128,7 @@
         <div class="content">
             <h1>99ASMR</h1>
             <div class="slogan">官方APP下载</div>
-            <p class="desc">当夜色深沉，万物静默。<br>在流转的光影中，开启一段治愈梦境。</p>
+            <p class="desc">当夜色深沉，万物静默。<br>开启一段治愈梦境。</p>
             
             <div class="download-zone">
                 <div class="btn-group">
@@ -151,8 +150,7 @@
     </div>
 
     <div id="ios-pwa-mask">
-        <div class="ios-guide-card" id="ios-guide-content">
-            </div>
+        <div class="ios-guide-card" id="ios-guide-content"></div>
     </div>
 
     <div class="ufo-wrap">
@@ -166,10 +164,9 @@
         const safariIcon = `<svg style="width:22px; height:22px; vertical-align:middle; margin:0 2px;" viewBox="0 0 1024 1024"><path d="M736 448v128c0 17.7-14.3 32-32 32s-32-14.3-32-32V448c0-53-43-96-96-96H256c-53 0-96 43-96 96v320c0 53 43 96 96 96h320c53 0 96-43 96-96V704c0-17.7 14.3-32 32-32s32 14.3 32 32v64c0 88.4-71.6 160-160 160H256c-88.4 0-160-71.6-160-160V448c0-88.4 71.6-160 160-160h320c88.4 0 160 71.6 160 160z" fill="#007AFF"></path><path d="M480 96c0-17.7 14.3-32 32-32s32 14.3 32 32v416c0 17.7-14.3 32-32 32s-32-14.3-32-32V96z" fill="#007AFF"></path><path d="M512 64l-128 128c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L512 157.3l82.7 82.7c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L512 64z" fill="#007AFF"></path></svg>`;
 
         const UA = navigator.userAgent;
-        const isInApp = /MicroMessenger|QQ\//i.test(UA); 
         const isIos = /iPhone|iPad|iPod/i.test(UA);
-        // 精准识别真正的原生 Safari
-        const isSafari = /Safari/i.test(UA) && !/Chrome|CriOS|Android|MQQBrowser|UCBrowser|Quark|Baiduboxapp|EdgiOS|FxiOS|Opt\//i.test(UA);
+        // 【核心精准逻辑】只要不是原生 Safari（包含微信、QQ、QQ浏览器等），全部视为非 Safari
+        const isSafari = /Safari/i.test(UA) && !/Chrome|CriOS|Android|MQQBrowser|UCBrowser|Quark|Baiduboxapp|EdgiOS|FxiOS|Opt\/|MicroMessenger|QQ\//i.test(UA);
 
         function handleAppUpdate() {
             const toast = document.getElementById('update-toast');
@@ -186,10 +183,10 @@
             el.select();
             document.execCommand('copy');
             document.body.removeChild(el);
-            alert("网址已复制成功！请打开 Safari 粘贴访问。");
+            alert("网址已复制成功！\n请立即打开手机自带的 Safari 浏览器粘贴访问。");
         }
 
-        // PWA 启动逻辑与自动测速跳转
+        /* --- [PWA 自动跳转与启动页] 保留 --- */
         (function() {
             const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
             if (isStandalone) {
@@ -207,42 +204,27 @@
             const tip = document.getElementById('env-tip');
             const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
 
-            // --- iOS 环境自动检测并弹出强指引 ---
+            // --- iOS 环境强导：非 Safari 即弹出“复制网址” ---
             if (isIos && !isStandalone) {
-                if (isInApp) {
-                    // 1. 微信/QQ 环境
+                if (!isSafari) {
                     iosContent.innerHTML = `
                         <img src="/icon-192.png" style="width:60px; border-radius:14px; margin-bottom:15px;">
-                        <h3 style="color:#333; margin-bottom:10px;">请在 Safari 中打开</h3>
-                        <p style="font-size:14px; color:#666; margin-bottom:20px;">微信/QQ 无法直接安装，请按指引切换：</p>
-                        <div style="text-align:left; background:#f0f7ff; padding:18px; border-radius:15px; margin-bottom:20px; border:1px solid #cce5ff;">
-                            <p style="margin:0 0 10px 0; color:#444;">1. 点击屏幕 <b>右上角 [...]</b></p>
-                            <p style="margin:0; color:#444;">2. 选择 <b>[在 Safari 中打开]</b></p>
-                        </div>
-                        <button style="background:var(--color-orange); color:#fff; border:none; width:100%; padding:15px; border-radius:15px; font-weight:bold;" onclick="iosMask.style.display='none'">我知道了</button>
-                    `;
-                    setTimeout(() => iosMask.style.display = 'block', 800);
-                    tip.innerText = "⚠️ 请点击右上角使用 Safari 浏览器打开";
-                } else if (!isSafari) {
-                    // 2. 其它非 Safari 浏览器 (QQ浏览器等)
-                    iosContent.innerHTML = `
-                        <img src="/icon-192.png" style="width:60px; border-radius:14px; margin-bottom:15px;">
-                        <h3 style="color:#333; margin-bottom:10px;">需切换至 Safari</h3>
-                        <p style="font-size:14px; color:#666; margin-bottom:20px;">检测到您正在使用第三方浏览器，无法直接添加桌面。请复制网址后切换访问。</p>
+                        <h3 style="color:#333; margin-bottom:10px;">请使用 Safari 访问</h3>
+                        <p style="font-size:14px; color:#666; margin-bottom:20px;">检测到非原生环境，无法直接安装。请复制网址后切换至系统自带的 Safari 访问。</p>
                         <button style="background:#333; color:#fff; border:none; width:100%; padding:15px; border-radius:15px; font-weight:bold; margin-bottom:15px; cursor:pointer;" onclick="copyUrl()">一键复制网址</button>
-                        <button style="background:transparent; color:#999; border:none; width:100%; font-size:12px; cursor:pointer;" onclick="iosMask.style.display='none'">返回下载页</button>
+                        <button style="background:transparent; color:#999; border:none; width:100%; font-size:12px; cursor:pointer;" onclick="iosMask.style.display='none'">我知道了</button>
                     `;
                     setTimeout(() => iosMask.style.display = 'block', 800);
-                    tip.innerText = "⚠️ 请复制网址并在 Safari 浏览器打开";
+                    tip.innerText = "⚠️ 请复制网址并使用 Safari 浏览器打开";
                 }
             }
 
             pwaBtn.onclick = () => {
                 if (isIos) {
-                    if (isInApp || !isSafari) {
+                    if (!isSafari) {
                         iosMask.style.display = 'block';
                     } else {
-                        // 3. 原生 Safari 环境引导
+                        // 真正 Safari 下点击按钮显示的安装指引
                         iosContent.innerHTML = `
                             <img src="/icon-192.png" style="width:60px; border-radius:14px; margin-bottom:15px;">
                             <h3 style="color:#333; margin-bottom:15px;">安装 99ASMR 到桌面</h3>
@@ -260,16 +242,16 @@
                                     <p style="margin:0; font-size:14px; color:#333;">点击右上角的 <b>“添加”</b> 即可</p>
                                 </div>
                             </div>
-                            <button style="background:var(--color-orange); color:#fff; border:none; width:100%; padding:15px; border-radius:15px; font-weight:bold; cursor:pointer;" onclick="iosMask.style.display='none'">准备好了</button>
+                            <button style="background:var(--color-orange); color:#fff; border:none; width:100%; padding:15px; border-radius:15px; font-weight:bold;" onclick="iosMask.style.display='none'">准备好了</button>
                         `;
                         iosMask.style.display = 'block';
                     }
                 } else {
-                    alert("请在 Chrome/Edge 浏览器菜单中选择 [安装应用] 或 [添加到桌面]");
+                    alert("Android 用户请直接点击 Android 按钮下载 APK 即可。");
                 }
             };
 
-            // Service Worker 更新检测
+            /* --- [Service Worker 更新提醒] 保留 --- */
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/sw.js').then(reg => {
                     reg.onupdatefound = () => {
@@ -284,7 +266,7 @@
             }
         };
 
-        // 星空画布
+        /* --- [星空背景绘制] 保留 --- */
         const canvas = document.getElementById('starCanvas');
         const ctx = canvas.getContext('2d');
         let w, h, stars = [];
