@@ -29,7 +29,7 @@
             touch-action: none;
         }
 
-        /* --- 启动页动画 (PWA模式专享) --- */
+        /* --- 启动页动画 --- */
         #pwa-launch-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #0a0e14; z-index: 1000000;
@@ -45,37 +45,46 @@
         /* --- 下载页 UI --- */
         .top-nav { position: absolute; top: 25px; left: 25px; z-index: 100; }
         .btn-home { background: var(--btn-dark); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 10px 22px; border-radius: 25px; text-decoration: none; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
-        .moon-giant { position: absolute; z-index: 2; background: radial-gradient(circle at 75% 50%, #ffffff 0%, #e8e8e8 50%, #b0b0b0 100%); border-radius: 50%; display: flex; align-items: center; justify-content: flex-end; box-sizing: border-box; box-shadow: 0 0 80px rgba(255, 255, 255, 0.2); transition: 0.5s; }
+        
+        .moon-giant { position: absolute; z-index: 2; background: radial-gradient(circle at 75% 50%, #ffffff 0%, #e8e8e8 50%, #b0b0b0 100%); border-radius: 50%; display: flex; align-items: center; justify-content: flex-end; box-sizing: border-box; box-shadow: 0 0 80px rgba(255, 255, 255, 0.2); }
         .content { z-index: 10; position: relative; }
         h1 { font-size: clamp(50px, 10vw, 88px); margin: 0; font-weight: 900; color: #2c3e50; }
         .slogan { font-size: clamp(18px, 4vw, 28px); font-weight: 800; margin: 15px 0 10px; color: #2c3e50; }
         .desc { font-size: 14px; color: #5d6d7e; line-height: 1.8; margin-bottom: 25px; }
+        
+        .download-zone { display: flex; flex-direction: column; gap: 20px; align-items: flex-start; }
         .btn-group { display: flex; gap: 12px; }
-        .btn { padding: 12px 35px; border-radius: 30px; text-decoration: none; font-size: 14px; font-weight: 800; text-align: center; cursor: pointer; border: none; }
+        .btn { padding: 12px 35px; border-radius: 30px; text-decoration: none; font-size: 14px; font-weight: 800; text-align: center; cursor: pointer; border: none; transition: 0.3s; }
         .btn-orange { background: var(--color-orange); color: #fff; box-shadow: 0 5px 15px rgba(242, 141, 53, 0.4); }
         .btn-outline { border: 2px solid #2c3e50; color: #2c3e50; background: transparent; }
 
-        /* 环境提示文字 */
-        #env-tip { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 10px; font-weight: 600; }
+        /* 二维码样式 */
+        .qr-container { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 5px; }
+        .qr-seal { background: rgba(255, 255, 255, 0.85); padding: 8px; border-radius: 10px; width: 100px; height: 100px; backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; }
+        .qr-seal img { width: 100%; border-radius: 4px; }
+        .qr-tip { font-size: 12px; color: #5d6d7e; font-weight: 600; }
+        #env-tip { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 5px; font-weight: 600; }
 
         /* 引导遮罩 */
         #ios-pwa-mask { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; backdrop-filter: blur(8px); }
-        .ios-guide-card { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 380px; background: #fff; border-radius: 20px; padding: 25px; text-align: center; box-sizing: border-box; animation: iosSlide 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); }
-        @keyframes iosSlide { from { bottom: -100%; } to { bottom: 30px; } }
+        .ios-guide-card { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 380px; background: #fff; border-radius: 20px; padding: 25px; text-align: center; box-sizing: border-box; }
         .ios-step { display: flex; align-items: flex-start; text-align: left; margin-bottom: 15px; color: #444; font-size: 14px; }
         .step-id { background: var(--color-orange); color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0; }
         
-        /* UFO 动画 */
+        /* UFO 动画 & 炫彩光束 */
         .ufo-wrap { position: absolute; z-index: 5; animation: ufoFloat 6s ease-in-out infinite; display: flex; flex-direction: column; align-items: center; width: 250px; }
-        .ufo-top { width: 110px; height: 70px; background: rgba(255, 255, 255, 0.15); border-radius: 60px 60px 0 0; backdrop-filter: blur(1px); border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: flex-end; justify-content: center; position: relative; }
-        .monster { width: 40px; height: 46px; background: #6a2ca3; border-radius: 12px 12px 4px 4px; position: relative; }
-        .ufo-body { width: 250px; height: 70px; background: linear-gradient(to bottom, #bdc3c7, #5c6267); border-radius: 50%; margin-top: -35px; display: flex; justify-content: center; align-items: center; gap: 12px; position: relative; }
+        .ufo-top { width: 110px; height: 70px; background: rgba(255, 255, 255, 0.15); border-radius: 60px 60px 0 0; backdrop-filter: blur(1px); border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: flex-end; justify-content: center; position: relative; z-index: 4; }
+        .monster { width: 40px; height: 46px; background: #6a2ca3; border-radius: 12px 12px 4px 4px; position: relative; z-index: 5; }
+        .ufo-body { width: 250px; height: 70px; background: linear-gradient(to bottom, #bdc3c7, #5c6267); border-radius: 50%; margin-top: -35px; display: flex; justify-content: center; align-items: center; gap: 12px; position: relative; z-index: 6; }
         .ufo-dot { width: 10px; height: 10px; border-radius: 50%; animation: lightBreath 6s infinite ease-in-out; }
+        .ufo-beam { width: 180px; height: 400px; clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%); margin: -10px auto 0; filter: blur(2px); animation: beamBreath 6s infinite ease-in-out; }
+
+        @keyframes lightBreath { 0%, 100% { background: var(--color-red); box-shadow: 0 0 15px var(--color-red); } 33% { background: var(--color-yellow); box-shadow: 0 0 15px var(--color-yellow); } 66% { background: var(--color-green); box-shadow: 0 0 15px var(--color-green); } }
+        @keyframes beamBreath { 0%, 100% { background: linear-gradient(to bottom, rgba(255, 59, 59, 0.35), transparent); } 33% { background: linear-gradient(to bottom, rgba(241, 196, 15, 0.35), transparent); } 66% { background: linear-gradient(to bottom, rgba(38, 222, 129, 0.35), transparent); } }
         @keyframes ufoFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-35px); } }
-        @keyframes lightBreath { 0%, 100% { background: var(--color-red); } 33% { background: var(--color-yellow); } 66% { background: var(--color-green); } }
 
         @media (min-width: 801px) { .moon-giant { top: 50%; left: -45vh; transform: translateY(-50%); width: 140vh; height: 140vh; padding-right: 18vh; } .content { width: 440px; text-align: left; } .ufo-wrap { top: 40%; right: 15%; } }
-        @media (max-width: 800px) { .moon-giant { top: -20vh; left: 50%; transform: translateX(-50%); width: 100vh; height: 100vh; padding-top: 38vh; justify-content: center; align-items: flex-start; } .content { width: 85%; text-align: center; } .download-zone { align-items: center; } .btn-group { flex-direction: column; align-items: center; } .ufo-wrap { bottom: -20px; right: 50%; transform: translateX(50%); top: auto; scale: 0.7; } }
+        @media (max-width: 800px) { .moon-giant { top: -20vh; left: 50%; transform: translateX(-50%); width: 100vh; height: 100vh; padding-top: 38vh; justify-content: center; align-items: flex-start; } .content { width: 85%; text-align: center; } .download-zone { align-items: center; } .btn-group { flex-direction: column; align-items: center; } .qr-container { display: none; } .ufo-wrap { bottom: -20px; right: 50%; transform: translateX(50%); top: auto; scale: 0.7; } }
     </style>
 </head>
 <body>
@@ -96,18 +105,24 @@
         <div class="content">
             <h1>99ASMR</h1>
             <div class="slogan">官方APP下载</div>
-            <p class="desc">
-                当夜色深沉，万物静默。<br>
-                在流转的光影中，开启一段治愈梦境。
-            </p>
+            <p class="desc">当夜色深沉，万物静默。<br>在流转的光影中，开启一段治愈梦境。</p>
+            
             <div class="download-zone">
                 <div class="btn-group">
                     <a id="android-btn" href="https://gh-proxy.org/https://github.com/asmrba/99app/releases/latest/download/app-release.apk" class="btn btn-orange">Android 点击下载</a>
-                    <button id="pwa-btn" class="btn btn-outline">桌面版 (PWA)</button>
+                    <button id="pwa-btn" class="btn btn-outline">IOS版(PWA)下载</button>
                 </div>
                 <p id="env-tip"></p>
+                
+                <div class="qr-container">
+                    <div class="qr-seal">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://gh-proxy.org/https://github.com/asmrba/99app/releases/latest/download/app-release.apk">
+                    </div>
+                    <span class="qr-tip">扫一扫直接下载</span>
+                </div>
             </div>
-            <p style="font-size: 11px; color: #99a; margin-top: 35px; font-weight: 600;">CREATED DATE / JANUARY 29, 2026</p>
+            
+            <p style="font-size: 11px; color: #99a; margin-top: 25px; font-weight: 600;">CREATED DATE / JANUARY 29, 2026</p>
         </div>
     </div>
 
@@ -129,7 +144,6 @@
     </div>
 
     <script>
-        // --- [1] 分流与环境预检 ---
         const GATEWAY_API = "https://api.999551.xyz/";
         const UA = navigator.userAgent;
         const isWechat = /MicroMessenger/i.test(UA);
@@ -139,7 +153,6 @@
         (function() {
             const urlParams = new URLSearchParams(window.location.search);
             const isPwaLaunch = urlParams.get('mode') === 'pwa' || window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
-            
             if (isPwaLaunch) {
                 document.write('<style>#pwa-launch-screen{display:flex !important;}</style>');
                 fetch(GATEWAY_API).then(r => r.json()).then(d => { if(d.pwa_url) window.location.replace(d.pwa_url); })
@@ -147,7 +160,6 @@
             }
         })();
 
-        // --- [2] 视觉动画 ---
         const canvas = document.getElementById('starCanvas');
         const ctx = canvas.getContext('2d');
         let w, h, stars = [];
@@ -156,7 +168,6 @@
         function draw() { ctx.fillStyle = '#0a0e14'; ctx.fillRect(0,0,w,h); stars.forEach(s => { ctx.globalAlpha = 0.4 + Math.abs(Math.sin(Date.now()*0.001)); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 7); ctx.fill(); }); requestAnimationFrame(draw); }
         draw();
 
-        // --- [3] 核心安装预检与引导逻辑 ---
         let deferredPrompt = null;
         window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
 
@@ -164,44 +175,25 @@
             const pwaBtn = document.getElementById('pwa-btn');
             const tip = document.getElementById('env-tip');
 
-            // 初始化文字提示
-            if (isWechat) {
-                tip.innerText = "⚠️ 微信内部无法安装，请在浏览器打开";
-            } else if (isIos && !isSafari) {
-                tip.innerText = "⚠️ iOS 用户请使用系统自带 Safari 访问";
-            } else {
-                tip.innerText = "✨ 推荐安装桌面版，体验更佳";
-            }
+            if (isWechat) { tip.innerText = "⚠️ 微信内部无法安装，请在浏览器打开"; }
+            else if (isIos && !isSafari) { tip.innerText = "⚠️ iOS 用户请使用系统自带 Safari 访问"; }
+            else { tip.innerText = "✨ 推荐安装桌面版，体验更佳"; }
 
             if (pwaBtn) {
                 pwaBtn.onclick = async (e) => {
                     e.preventDefault();
-
-                    // 1. 微信环境拦截
-                    if (isWechat) {
-                        alert("请点击右上角 [...]，选择 [在浏览器中打开] 后即可安装。");
-                        return;
-                    }
-
-                    // 2. iOS 浏览器兼容性拦截
-                    if (isIos && !isSafari) {
-                        alert("检测到非 Safari 浏览器。iOS 用户必须使用自带 Safari 浏览器才能点击 [添加到主屏幕]。");
-                        return;
-                    }
-
-                    // 3. 原生安装触发 (Chrome/Edge/Android)
+                    if (isWechat) { alert("请点击右上角 [...]，选择 [在Safari浏览器中打开] 后即可安装。"); return; }
+                    if (isIos && !isSafari) { alert("检测到非 Safari 浏览器。iOS 用户必须使用自带 Safari 浏览器才能点击 [IOS版(PWA)下载]。"); return; }
                     if (deferredPrompt) {
                         deferredPrompt.prompt();
                         const { outcome } = await deferredPrompt.userChoice;
                         if (outcome === 'accepted') deferredPrompt = null;
                     } else {
-                        // 4. 通用手动引导
                         document.getElementById('ios-pwa-mask').style.display = 'block';
                     }
                 };
             }
         }
-
         if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }
         window.onload = initLogic;
     </script>
