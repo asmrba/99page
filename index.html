@@ -241,7 +241,7 @@
             const pwaBtn = document.getElementById('pwa-btn');
             const tip = document.getElementById('env-tip');
 
-            if (isWechat) { tip.innerText = "⚠️ 请点击右上角选择 [在浏览器打开]"; }
+            if (isWechat) { tip.innerText = "⚠️ 请点击右上角选择 [在Safari浏览器打开]"; }
             else if (isIos && !isSafari) { tip.innerText = "⚠️ iOS 请使用自带 Safari 浏览器安装"; }
 
             if ('serviceWorker' in navigator) {
