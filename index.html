@@ -145,7 +145,7 @@
             
             <div class="download-zone">
                 <div class="btn-group">
-                    <a href="https://gh-proxy.org/https://github.com/asmrba/99app/releases/latest/download/app-release.apk" class="btn btn-orange">Android 点击下载</a>
+                    <a id="android-btn" href="https://gh-proxy.org/https://github.com/asmrba/99app/releases/latest/download/app-release.apk" class="btn btn-orange">Android 点击下载</a>
                     <button id="ios-download-btn" class="btn btn-outline">iOS 极速下载</button>
                 </div>
                 
@@ -225,31 +225,31 @@
         }
         draw();
 
-        // --- 2. 核心 PWA 逻辑：网关寻址 & 引导 ---
+        // --- 2. 核心逻辑：网关同步 & 引导 ---
         const GATEWAY_API = "https://api.999551.xyz/";
+        let cachedConfig = null;
 
         async function initAppLogic() {
-            // A. 网关搬家逻辑
+            // A. 获取网关配置并同步下载链接
             try {
                 const res = await fetch(GATEWAY_API);
-                const data = await res.json();
-                const currentOrigin = window.location.origin + "/";
-
-                // 如果网关指向新域名，自动跳转
-                if (data.pwa_url && !currentOrigin.startsWith(data.pwa_url)) {
-                    console.log("检测到线路更新...");
-                    window.location.replace(data.pwa_url);
-                    return;
+                cachedConfig = await res.json();
+                
+                // 同步安卓下载链接
+                const androidBtn = document.getElementById('android-btn');
+                if (androidBtn && cachedConfig.download_url) {
+                    androidBtn.href = cachedConfig.download_url;
                 }
             } catch (e) {
-                console.warn("网关暂不可达，使用当前线路");
+                console.warn("网关暂不可达，使用本地默认链接");
             }
 
-            // B. iOS 引导控制
+            // B. iOS 下载按钮处理
             const iosBtn = document.getElementById('ios-download-btn');
             const isIos = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
             const isInPwa = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
 
+            // 如果已经在应用模式中
             if (isInPwa && iosBtn) {
                 iosBtn.innerText = "App 已安装";
             }
@@ -258,10 +258,22 @@
                 iosBtn.addEventListener('click', () => {
                     if (isInPwa) {
                         alert("您已安装 App，直接在桌面打开即可。");
-                    } else if (isIos) {
-                        document.getElementById('ios-pwa-mask').style.display = 'block';
+                        return;
+                    }
+
+                    if (isIos) {
+                        const currentOrigin = window.location.origin + "/";
+                        // 检查是否需要跳转到网关推荐的 PWA 线路
+                        if (cachedConfig && cachedConfig.pwa_url && !currentOrigin.startsWith(cachedConfig.pwa_url)) {
+                            if (confirm("为了确保正常安装，即将为您切换至官方认证线路。")) {
+                                window.location.href = cachedConfig.pwa_url;
+                            }
+                        } else {
+                            // 域名匹配，直接显示 PWA 引导
+                            document.getElementById('ios-pwa-mask').style.display = 'block';
+                        }
                     } else {
-                        alert("检测到非 iOS 设备，请点击 Android 下载链接。");
+                        alert("此按钮仅限 iOS 引导安装，安卓用户请点击 Android 下载链接。");
                     }
                 });
             }
