@@ -69,12 +69,29 @@
         h1 { font-size: clamp(50px, 10vw, 88px); margin: 0; font-weight: 900; color: #2c3e50; }
         .slogan { font-size: clamp(18px, 4vw, 28px); font-weight: 800; margin: 15px 0 10px; color: #2c3e50; }
         .desc { font-size: 14px; color: #5d6d7e; line-height: 1.8; margin-bottom: 25px; }
-        .btn-group { display: flex; gap: 12px; }
-        .btn { padding: 12px 35px; border-radius: 30px; text-decoration: none; font-size: 14px; font-weight: 800; text-align: center; cursor: pointer; border: none; transition: 0.3s; }
+        
+        .btn-group { display: flex; gap: 12px; position: relative; }
+        .btn { padding: 12px 35px; border-radius: 30px; text-decoration: none; font-size: 14px; font-weight: 800; text-align: center; cursor: pointer; border: none; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; }
         .btn-orange { background: var(--color-orange); color: #fff; box-shadow: 0 5px 15px rgba(242, 141, 53, 0.4); }
         .btn-outline { border: 2px solid #2c3e50; color: #2c3e50; background: transparent; }
-        .qr-seal { background: rgba(255, 255, 255, 0.85); padding: 8px; border-radius: 10px; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; }
-        .qr-seal img { width: 100%; border-radius: 4px; }
+
+        /* 安卓按钮容器，用于包裹二维码 */
+        .android-download-wrapper { position: relative; display: inline-block; }
+        .qr-popover {
+            position: absolute; bottom: calc(100% + 15px); left: 50%; transform: translateX(-50%) translateY(10px);
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
+            padding: 12px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000; display: flex; flex-direction: column; align-items: center; gap: 8px;
+        }
+        .qr-popover::after {
+            content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+            border: 8px solid transparent; border-top-color: rgba(255,255,255,0.1);
+        }
+        .android-download-wrapper:hover .qr-popover { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+        .qr-popover img { width: 120px; height: 120px; border-radius: 8px; background: #fff; padding: 4px; }
+        .qr-popover span { color: #fff; font-size: 11px; white-space: nowrap; font-weight: 600; opacity: 0.9; }
 
         /* 引导遮罩 */
         #ios-pwa-mask { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; backdrop-filter: blur(8px); }
@@ -93,8 +110,8 @@
         @keyframes beamBreath { 0%, 100% { background: linear-gradient(to bottom, rgba(255, 59, 59, 0.35), transparent); } 33% { background: linear-gradient(to bottom, rgba(241, 196, 15, 0.35), transparent); } 66% { background: linear-gradient(to bottom, rgba(38, 222, 129, 0.35), transparent); } }
         @keyframes ufoFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-35px); } }
 
-        @media (min-width: 801px) { .moon-giant { top: 50%; left: -45vh; transform: translateY(-50%); width: 140vh; height: 140vh; padding-right: 18vh; } .content { width: 440px; text-align: left; } .ufo-wrap { top: 40%; right: 15%; } }
-        @media (max-width: 800px) { .moon-giant { top: -20vh; left: 50%; transform: translateX(-50%); width: 100vh; height: 100vh; padding-top: 38vh; justify-content: center; align-items: flex-start; } .content { width: 85%; text-align: center; } .download-zone { align-items: center; } .btn-group { flex-direction: column; align-items: center; } .qr-container { display: none; } .ufo-wrap { bottom: -20px; right: 50%; transform: translateX(50%); top: auto; scale: 0.7; } }
+        @media (min-width: 801px) { .moon-giant { top: 50%; left: -45vh; transform: translateY(-50%); width: 140vh; height: 140vh; padding-right: 18vh; } .content { width: 460px; text-align: left; } .ufo-wrap { top: 40%; right: 15%; } }
+        @media (max-width: 800px) { .moon-giant { top: -20vh; left: 50%; transform: translateX(-50%); width: 100vh; height: 100vh; padding-top: 38vh; justify-content: center; align-items: flex-start; } .content { width: 85%; text-align: center; } .download-zone { align-items: center; } .btn-group { flex-direction: column; align-items: center; } .qr-popover { display: none; } .ufo-wrap { bottom: -20px; right: 50%; transform: translateX(50%); top: auto; scale: 0.7; } }
     </style>
 </head>
 <body>
@@ -128,20 +145,22 @@
             
             <div class="download-zone">
                 <div class="btn-group">
-                    <a id="android-btn" href="https://gh-proxy.org/https://github.com/asmrba/99app/releases/latest/download/app-release.apk" class="btn btn-orange">Android 点击下载</a>
-                    <button id="pwa-btn" class="btn btn-outline">IOS版(PWA)下载</button>
-                </div>
-                <p id="env-tip"></p>
-                
-                <div class="qr-container" style="display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 5px;">
-                    <div class="qr-seal">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://gh-proxy.org/https://github.com/asmrba/99app/releases/latest/download/app-release.apk">
+                    <div class="android-download-wrapper">
+                        <div class="qr-popover">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://gh-proxy.org/https://github.com/asmrba/99app/releases/latest/download/app-release.apk">
+                            <span>手机扫码 极速下载</span>
+                        </div>
+                        <a id="android-btn" href="https://gh-proxy.org/https://github.com/asmrba/99app/releases/latest/download/app-release.apk" class="btn btn-orange">
+                            Android 立即下载
+                        </a>
                     </div>
-                    <span style="font-size: 12px; color: #5d6d7e; font-weight: 600;">扫一扫直接下载</span>
+
+                    <button id="pwa-btn" class="btn btn-outline">IOS版(PWA)安装</button>
                 </div>
+                <p id="env-tip" style="margin-top: 15px; font-size: 13px; color: #f28d35; font-weight: 600;"></p>
             </div>
             
-            <p style="font-size: 11px; color: #99a; margin-top: 25px; font-weight: 600;">CREATED DATE / JANUARY 29, 2026</p>
+            <p style="font-size: 11px; color: #99a; margin-top: 35px; font-weight: 600; letter-spacing: 1px;">CREATED DATE / JANUARY 29, 2026</p>
         </div>
     </div>
 
@@ -149,9 +168,9 @@
         <div class="ios-guide-card">
             <img src="/icon-192.png" style="width:60px; border-radius:12px; margin-bottom:15px;">
             <h3 style="color:#333; margin:0 0 15px 0;">添加 99ASMR 到桌面</h3>
-            <div class="ios-step"><span class="step-id">1</span><p>点击浏览器底部的 <b>“分享”</b> 或 <b>“菜单”</b> 按钮</p></div>
-            <div class="ios-step"><span class="step-id">2</span><p>找到并点击 <b>“添加到主屏幕”</b> 或 <b>“安装应用”</b></p></div>
-            <div class="ios-step"><span class="step-id">3</span><p>确认后，桌面将出现 App 图标，畅享体验</p></div>
+            <div class="ios-step" style="display:flex; align-items:center; margin-bottom:10px; text-align:left;"><span class="step-id">1</span><p style="margin:0; font-size:14px; color:#444;">点击浏览器底部的 <b>“分享”</b> 图标</p></div>
+            <div class="ios-step" style="display:flex; align-items:center; margin-bottom:10px; text-align:left;"><span class="step-id">2</span><p style="margin:0; font-size:14px; color:#444;">找到并点击 <b>“添加到主屏幕”</b></p></div>
+            <div class="ios-step" style="display:flex; align-items:center; margin-bottom:20px; text-align:left;"><span class="step-id">3</span><p style="margin:0; font-size:14px; color:#444;">确认后，桌面将出现 App 图标</p></div>
             <button style="background:var(--color-orange); color:#fff; border:none; width:100%; padding:14px; border-radius:14px; font-weight:bold; cursor:pointer;" onclick="document.getElementById('ios-pwa-mask').style.display='none'">我知道了</button>
         </div>
     </div>
@@ -171,125 +190,84 @@
         const isSafari = /^((?!chrome|android).)*safari/i.test(UA);
         let deferredPrompt = null;
 
-        // --- 2. 升级处理函数 (放在全局) ---
+        // --- 2. 升级处理函数 ---
         function handleAppUpdate() {
             const toast = document.getElementById('update-toast');
             if (toast) toast.innerText = "🚀 正在升级线路...";
-            
             fetch(GATEWAY_API).then(r => r.json()).then(d => {
                 if(d.pwa_url) {
-                    setTimeout(() => {
-                        window.location.replace(d.pwa_url);
-                    }, 800);
-                } else {
-                    location.reload();
-                }
+                    setTimeout(() => { window.location.replace(d.pwa_url); }, 800);
+                } else { location.reload(); }
             }).catch(() => location.reload());
         }
 
-        // --- 3. PWA 启动分流控制 ---
+        // --- 3. PWA 启动逻辑 ---
         (function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const isPwaLaunch = urlParams.get('mode') === 'pwa' || window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
-            
+            const isPwaLaunch = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
             if (isPwaLaunch) {
                 document.getElementById('pwa-launch-screen').style.display = 'flex';
-                
-                if (!navigator.onLine) {
-                    setTimeout(() => { window.location.href = "/offline.html"; }, 500);
-                    return;
-                }
-
-                setTimeout(() => {
-                    document.getElementById('pwa-launch-screen').style.display = 'none';
-                    document.getElementById('skeleton-screen').style.display = 'block';
-                }, 1000);
-
                 fetch(GATEWAY_API).then(r => r.json()).then(d => { 
                     if(d.pwa_url) window.location.replace(d.pwa_url); 
-                }).catch(() => { 
-                    setTimeout(() => { 
-                        const text = document.querySelector('.launch-text');
-                        if(text) text.innerText="线路维护中..."; 
-                    }, 3000); 
                 });
             }
         })();
 
-        // --- 4. 动画初始化 ---
+        // --- 4. 星空背景 ---
         const canvas = document.getElementById('starCanvas');
         const ctx = canvas.getContext('2d');
         let w, h, stars = [];
         function res() { 
             w = canvas.width = window.innerWidth; 
             h = canvas.height = window.innerHeight; 
-            stars = Array.from({length: 80}, () => ({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.2, speed: 0.01 })); 
+            stars = Array.from({length: 80}, () => ({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.2 })); 
         }
-        window.onresize = res; 
-        res();
+        window.onresize = res; res();
         function draw() { 
-            ctx.fillStyle = '#0a0e14'; 
-            ctx.fillRect(0,0,w,h); 
+            ctx.fillStyle = '#0a0e14'; ctx.fillRect(0,0,w,h); 
             stars.forEach(s => { 
                 ctx.globalAlpha = 0.4 + Math.abs(Math.sin(Date.now()*0.001)); 
-                ctx.fillStyle = '#fff'; 
-                ctx.beginPath(); 
-                ctx.arc(s.x, s.y, s.r, 0, 7); 
-                ctx.fill(); 
+                ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 7); ctx.fill(); 
             }); 
             requestAnimationFrame(draw); 
         }
         draw();
 
-        // --- 5. 核心逻辑：安装引导与更新检测 ---
+        // --- 5. 环境检测与按钮逻辑 ---
         window.addEventListener('beforeinstallprompt', (e) => { 
-            e.preventDefault(); 
-            deferredPrompt = e; 
+            e.preventDefault(); deferredPrompt = e; 
         });
 
-        async function initLogic() {
+        window.onload = function() {
             const pwaBtn = document.getElementById('pwa-btn');
             const tip = document.getElementById('env-tip');
 
-            if (tip) {
-                if (isWechat) { tip.innerText = "⚠️ 微信内部无法安装，请在Safari浏览器打开"; }
-                else if (isIos && !isSafari) { tip.innerText = "⚠️ iOS 用户请使用系统自带 Safari 访问"; }
-            }
+            if (isWechat) { tip.innerText = "⚠️ 请点击右上角选择 [在浏览器打开]"; }
+            else if (isIos && !isSafari) { tip.innerText = "⚠️ iOS 请使用自带 Safari 浏览器安装"; }
 
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/sw.js').then(reg => {
-                    reg.update(); 
                     reg.onupdatefound = () => {
                         const worker = reg.installing;
                         worker.onstatechange = () => {
                             if (worker.state === 'installed' && navigator.serviceWorker.controller) {
-                                const toast = document.getElementById('update-toast');
-                                if (toast) toast.style.display = 'block';
+                                document.getElementById('update-toast').style.display = 'block';
                             }
                         };
                     };
                 });
             }
 
-            if (pwaBtn) {
-                pwaBtn.onclick = async (e) => {
-                    e.preventDefault();
-                    if (isWechat) { alert("请点击右上角 [...]，选择 [在Safari浏览器中打开] 后即可安装。"); return; }
-                    if (isIos && !isSafari) { alert("检测到非 Safari 浏览器。iOS 用户必须使用自带 Safari 浏览器。"); return; }
-                    
-                    if (deferredPrompt) {
-                        deferredPrompt.prompt();
-                        const { outcome } = await deferredPrompt.userChoice;
-                        if (outcome === 'accepted') deferredPrompt = null;
-                    } else {
-                        const mask = document.getElementById('ios-pwa-mask');
-                        if(mask) mask.style.display = 'block';
-                    }
-                };
-            }
-        }
-
-        window.onload = initLogic;
+            pwaBtn.onclick = async () => {
+                if (isIos) {
+                    if (!isSafari) { alert("iOS 必须使用 Safari 浏览器才能安装 PWA"); return; }
+                    document.getElementById('ios-pwa-mask').style.display = 'block';
+                } else if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                } else {
+                    alert("请在 Chrome/Edge 浏览器菜单中选择 [安装应用]");
+                }
+            };
+        };
     </script>
 </body>
 </html>
