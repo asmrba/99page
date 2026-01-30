@@ -177,7 +177,6 @@
 
             if (isWechat) { tip.innerText = "⚠️ 微信内部无法安装，请在浏览器打开"; }
             else if (isIos && !isSafari) { tip.innerText = "⚠️ iOS 用户请使用系统自带 Safari 访问"; }
-            else { tip.innerText = "✨ 推荐安装桌面版，体验更佳"; }
 
             if (pwaBtn) {
                 pwaBtn.onclick = async (e) => {
