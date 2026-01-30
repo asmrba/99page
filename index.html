@@ -67,14 +67,6 @@
         .qr-seal img { width: 100%; border-radius: 4px; }
         .qr-tip { font-size: 12px; color: #5d6d7e; font-weight: 600; }
 
-        .ufo-wrap { position: absolute; z-index: 5; animation: ufoFloat 6s ease-in-out infinite; display: flex; flex-direction: column; align-items: center; width: 250px; will-change: transform; }
-        .ufo-top { width: 110px; height: 70px; background: rgba(255, 255, 255, 0.15); border-radius: 60px 60px 0 0; backdrop-filter: blur(1px); border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: flex-end; justify-content: center; position: relative; z-index: 4; }
-        .monster { width: 40px; height: 46px; background: #6a2ca3; border-radius: 12px 12px 4px 4px; position: relative; z-index: 5; margin-bottom: 2px; }
-        .monster::after { content: ''; position: absolute; width: 6px; height: 6px; background: #fff; border-radius: 50%; top: 11px; left: 10px; box-shadow: 15px 0 0 #fff; }
-        .ufo-body { width: 250px; height: 70px; background: linear-gradient(to bottom, #bdc3c7, #5c6267); border-radius: 50%; margin-top: -35px; display: flex; justify-content: center; align-items: center; gap: 12px; position: relative; z-index: 6; }
-        .ufo-dot { width: 10px; height: 10px; border-radius: 50%; animation: lightBreath 6s infinite ease-in-out; will-change: background; }
-        .ufo-beam { width: 180px; height: 400px; clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%); margin: -10px auto 0; filter: blur(2px); animation: beamBreath 6s infinite ease-in-out; will-change: background; }
-
         #ios-pwa-mask { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; backdrop-filter: blur(8px); }
         .ios-guide-card { 
             position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); 
@@ -88,34 +80,21 @@
         .ios-close-btn { background: var(--color-orange); color: #fff; border: none; width: 100%; padding: 14px; border-radius: 14px; font-weight: bold; margin-top: 10px; cursor: pointer; }
         .ios-arrow-down { position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 12px solid #fff; }
 
-        @keyframes lightBreath {
-            0%, 100% { background: var(--color-red); box-shadow: 0 0 15px var(--color-red); opacity: 1; }
-            33% { background: var(--color-yellow); box-shadow: 0 0 15px var(--color-yellow); opacity: 1; }
-            66% { background: var(--color-green); box-shadow: 0 0 15px var(--color-green); opacity: 1; }
-            16%, 49%, 82% { opacity: 0.3; }
-        }
-        @keyframes beamBreath {
-            0%, 100% { background: linear-gradient(to bottom, rgba(255, 59, 59, 0.35), transparent); }
-            33% { background: linear-gradient(to bottom, rgba(241, 196, 15, 0.35), transparent); }
-            66% { background: linear-gradient(to bottom, rgba(38, 222, 129, 0.35), transparent); }
-        }
+        /* UFO 动画省略... 保持原样 */
+        .ufo-wrap { position: absolute; z-index: 5; animation: ufoFloat 6s ease-in-out infinite; display: flex; flex-direction: column; align-items: center; width: 250px; will-change: transform; }
+        .ufo-top { width: 110px; height: 70px; background: rgba(255, 255, 255, 0.15); border-radius: 60px 60px 0 0; backdrop-filter: blur(1px); border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: flex-end; justify-content: center; position: relative; z-index: 4; }
+        .monster { width: 40px; height: 46px; background: #6a2ca3; border-radius: 12px 12px 4px 4px; position: relative; z-index: 5; margin-bottom: 2px; }
+        .monster::after { content: ''; position: absolute; width: 6px; height: 6px; background: #fff; border-radius: 50%; top: 11px; left: 10px; box-shadow: 15px 0 0 #fff; }
+        .ufo-body { width: 250px; height: 70px; background: linear-gradient(to bottom, #bdc3c7, #5c6267); border-radius: 50%; margin-top: -35px; display: flex; justify-content: center; align-items: center; gap: 12px; position: relative; z-index: 6; }
+        .ufo-dot { width: 10px; height: 10px; border-radius: 50%; animation: lightBreath 6s infinite ease-in-out; will-change: background; }
+        .ufo-beam { width: 180px; height: 400px; clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%); margin: -10px auto 0; filter: blur(2px); animation: beamBreath 6s infinite ease-in-out; will-change: background; }
+
+        @keyframes lightBreath { 0%, 100% { background: var(--color-red); box-shadow: 0 0 15px var(--color-red); opacity: 1; } 33% { background: var(--color-yellow); box-shadow: 0 0 15px var(--color-yellow); opacity: 1; } 66% { background: var(--color-green); box-shadow: 0 0 15px var(--color-green); opacity: 1; } 16%, 49%, 82% { opacity: 0.3; } }
+        @keyframes beamBreath { 0%, 100% { background: linear-gradient(to bottom, rgba(255, 59, 59, 0.35), transparent); } 33% { background: linear-gradient(to bottom, rgba(241, 196, 15, 0.35), transparent); } 66% { background: linear-gradient(to bottom, rgba(38, 222, 129, 0.35), transparent); } }
         @keyframes ufoFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-35px); } }
 
-        @media (min-width: 801px) {
-            .moon-giant { top: 50%; left: -45vh; transform: translateY(-50%); width: 140vh; height: 140vh; padding-right: 18vh; }
-            .content { width: 440px; text-align: left; }
-            .ufo-wrap { top: 40%; right: 15%; }
-            .c1 { width: 100px; height: 100px; top: 20%; right: 30%; }
-        }
-        @media (max-width: 800px) {
-            .moon-giant { top: -20vh; left: 50%; transform: translateX(-50%); width: 100vh; height: 100vh; padding-top: 38vh; justify-content: center; align-items: flex-start; }
-            .content { width: 85%; text-align: center; }
-            .download-zone { align-items: center; }
-            .btn-group { justify-content: center; flex-direction: column; align-items: center; }
-            .btn { width: 220px; }
-            .qr-container { display: none; }
-            .ufo-wrap { bottom: -20px; right: 50%; transform: translateX(50%); top: auto; scale: 0.7; }
-        }
+        @media (min-width: 801px) { .moon-giant { top: 50%; left: -45vh; transform: translateY(-50%); width: 140vh; height: 140vh; padding-right: 18vh; } .content { width: 440px; text-align: left; } .ufo-wrap { top: 40%; right: 15%; } }
+        @media (max-width: 800px) { .moon-giant { top: -20vh; left: 50%; transform: translateX(-50%); width: 100vh; height: 100vh; padding-top: 38vh; justify-content: center; align-items: flex-start; } .content { width: 85%; text-align: center; } .download-zone { align-items: center; } .btn-group { justify-content: center; flex-direction: column; align-items: center; } .btn { width: 220px; } .qr-container { display: none; } .ufo-wrap { bottom: -20px; right: 50%; transform: translateX(50%); top: auto; scale: 0.7; } }
     </style>
 </head>
 <body>
@@ -141,7 +120,7 @@
                     <button id="pwa-btn" class="btn btn-outline">桌面版 (PWA)</button>
                 </div>
                 <div class="qr-container">
-                    <div class="qr-seal"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://gh-proxy.org/https://github.com/asmrba/99app/releases/latest/download/app-release.apk"></div>
+                    <div class="qr-seal"><img id="qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://gh-proxy.org/https://github.com/asmrba/99app/releases/latest/download/app-release.apk"></div>
                     <span class="qr-tip">扫一扫下载</span>
                 </div>
             </div>
@@ -163,62 +142,52 @@
 
     <div class="ufo-wrap">
         <div class="ufo-top"><div class="monster"></div></div>
-        <div class="ufo-body">
-            <div class="ufo-dot"></div>
-            <div class="ufo-dot" style="animation-delay: 0.1s"></div>
-            <div class="ufo-dot" style="animation-delay: 0.2s"></div>
-            <div class="ufo-dot" style="animation-delay: 0.3s"></div>
-        </div>
+        <div class="ufo-body"><div class="ufo-dot"></div><div class="ufo-dot" style="animation-delay: 0.1s"></div><div class="ufo-dot" style="animation-delay: 0.2s"></div><div class="ufo-dot" style="animation-delay: 0.3s"></div></div>
         <div class="ufo-beam"></div>
     </div>
 
     <script>
-        // 1. 星空背景
+        // 星空控制...
         const canvas = document.getElementById('starCanvas');
         const ctx = canvas.getContext('2d');
         let w, h, stars = [];
-        function res() { 
-            w = canvas.width = window.innerWidth; 
-            h = canvas.height = window.innerHeight; 
-            const count = w > 800 ? 100 : 50;
-            stars = Array.from({length: count}, () => ({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.2, speed: 0.005+Math.random()*0.01 }));
-        }
+        function res() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; const count = w > 800 ? 100 : 50; stars = Array.from({length: count}, () => ({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.2, speed: 0.005+Math.random()*0.01 })); }
         window.onresize = res; res();
-        function draw() {
-            ctx.fillStyle = '#0a0e14'; ctx.fillRect(0,0,w,h);
-            stars.forEach(s => { ctx.globalAlpha = 0.2 + Math.abs(Math.sin(Date.now()*s.speed)); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 7); ctx.fill(); });
-            requestAnimationFrame(draw);
-        }
+        function draw() { ctx.fillStyle = '#0a0e14'; ctx.fillRect(0,0,w,h); stars.forEach(s => { ctx.globalAlpha = 0.2 + Math.abs(Math.sin(Date.now()*s.speed)); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 7); ctx.fill(); }); requestAnimationFrame(draw); }
         draw();
 
-        // 2. PWA & 网关逻辑
+        // --- 核心修正逻辑 ---
         const GATEWAY_API = "https://api.999551.xyz/";
 
         async function initLogic() {
+            // 检测是否是从桌面图标启动的 PWA 环境
             const isInPwa = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
 
-            // 获取网关配置
             try {
                 const res = await fetch(GATEWAY_API);
                 const data = await res.json();
                 
-                // A. 如果已经在 PWA 模式启动，检测是否需要搬家到新域名
+                // 1. 【只有在 PWA 模式下启动】才执行跳转内容页
                 if (isInPwa) {
                     const currentOrigin = window.location.origin + "/";
                     if (data.pwa_url && !currentOrigin.startsWith(data.pwa_url)) {
-                        console.log("PWA 内部检测到线路更新，正在迁移...");
                         window.location.replace(data.pwa_url);
                         return;
                     }
                 }
 
-                // B. 同步安卓下载链接
+                // 2. 【在网页模式下】仅同步下载链接和二维码，不执行任何跳转
                 const androidBtn = document.getElementById('android-btn');
-                if (androidBtn && data.download_url) androidBtn.href = data.download_url;
+                const qrImg = document.getElementById('qr-img');
+                
+                if (data.download_url) {
+                    if (androidBtn) androidBtn.href = data.download_url;
+                    if (qrImg) qrImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(data.download_url);
+                }
 
-            } catch (e) { console.warn("网关暂不可达"); }
+            } catch (e) { console.warn("网关数据同步失败"); }
 
-            // C. 按钮逻辑：只负责唤起安装引导，绝不在此页面自动跳转
+            // 3. 按钮点击处理
             const pwaBtn = document.getElementById('pwa-btn');
             if (isInPwa && pwaBtn) {
                 pwaBtn.innerText = "App 已安装";
@@ -228,9 +197,9 @@
                 pwaBtn.onclick = (e) => {
                     e.preventDefault();
                     if (isInPwa) {
-                        alert("App 已安装在桌面。");
+                        alert("App 已安装，请在桌面寻找图标。");
                     } else {
-                        // 强制显示引导，不准跳走
+                        // 强制弹出本地安装引导，不再跳转
                         document.getElementById('ios-pwa-mask').style.display = 'block';
                     }
                 };
