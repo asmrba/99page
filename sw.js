@@ -1,12 +1,16 @@
-const CACHE_NAME = '99asmr-shell-v1';
+const CACHE_NAME = '99asmr-v2026-v1'; // 每次更新代码请修改此版本号
+const OFFLINE_URL = '/offline.html';
+
 const ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/icon-192.png'
+  '/icon-192.png',
+  '/icon-512.png',
+  OFFLINE_URL
 ];
 
-// 安装时缓存核心文件
+// 1. 安装：缓存基础资源
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
@@ -14,16 +18,31 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// 激活时接管页面
+// 2. 激活：清理旧版本缓存
 self.addEventListener('activate', (event) => {
-  event.waitUntil(clients.claim());
+  event.waitUntil(
+    caches.keys().then((keys) => Promise.all(
+      keys.map((key) => {
+        if (key !== CACHE_NAME) return caches.delete(key);
+      })
+    ))
+  );
+  self.clients.claim();
 });
 
-// 拦截请求：优先从网络获取，网络失败（如域名挂了）则从本地缓存获取
+// 3. 拦截：处理离线请求
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    fetch(event.request).catch(() => {
-      return caches.match(event.request);
-    })
-  );
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).catch(() => {
+        return caches.match(OFFLINE_URL);
+      })
+    );
+  } else {
+    event.respondWith(
+      caches.match(event.request).then((response) => {
+        return response || fetch(event.request);
+      })
+    );
+  }
 });
