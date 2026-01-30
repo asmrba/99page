@@ -29,7 +29,7 @@
             touch-action: none;
         }
 
-        /* --- [骨架屏] 加载占位 --- */
+        /* --- [骨架屏] --- */
         #skeleton-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #0a0e14; z-index: 1000001; display: none; padding: 30px; box-sizing: border-box;
@@ -42,7 +42,7 @@
         }
         @keyframes sk-load { from { left: -150%; } to { left: 150%; } }
 
-        /* --- [启动页] App模式遮罩 --- */
+        /* --- [启动页] --- */
         #pwa-launch-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #0a0e14; z-index: 1000002; display: none; flex-direction: column; align-items: center; justify-content: center;
@@ -51,7 +51,7 @@
         @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } }
         .launch-text { color: #fff; font-size: 18px; font-weight: bold; letter-spacing: 2px; }
 
-        /* --- [更新提醒] 气泡 --- */
+        /* --- [更新提醒] --- */
         #update-toast {
             position: fixed; bottom: 30px; right: 20px; background: var(--color-orange); color: #fff;
             padding: 12px 22px; border-radius: 50px; font-size: 13px; font-weight: bold;
@@ -60,7 +60,7 @@
         }
         @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* --- 动画与UI样式 --- */
+        /* --- 动画与UI --- */
         #starCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
         .top-nav { position: absolute; top: 25px; left: 25px; z-index: 100; }
         .btn-home { background: var(--btn-dark); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 10px 22px; border-radius: 25px; text-decoration: none; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
@@ -75,7 +75,7 @@
         .btn-orange { background: var(--color-orange); color: #fff; box-shadow: 0 5px 15px rgba(242, 141, 53, 0.4); }
         .btn-outline { border: 2px solid #2c3e50; color: #2c3e50; background: transparent; }
 
-        /* 安卓按钮容器，用于包裹二维码 */
+        /* 二维码 */
         .android-download-wrapper { position: relative; display: inline-block; }
         .qr-popover {
             position: absolute; bottom: calc(100% + 15px); left: 50%; transform: translateX(-50%) translateY(10px);
@@ -148,7 +148,7 @@
                     <div class="android-download-wrapper">
                         <div class="qr-popover">
                             <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://gh-proxy.org/https://github.com/asmrba/99app/releases/download/v1.0.1/app-arm64-v8a-release.apk">
-                            <span style="color: #000; font-size: 11px; white-space: nowrap; font-weight: 800; opacity: 1;">手机扫码 极速下载</span>
+                            <span style="color: #000; font-size: 11px; white-space: nowrap; font-weight: 800;">手机扫码 极速下载</span>
                         </div>
                         <a id="android-btn" href="https://gh-proxy.org/https://github.com/asmrba/99app/releases/download/v1.0.1/app-arm64-v8a-release.apk" class="btn btn-orange">
                             Android 立即下载
@@ -160,12 +160,12 @@
                 <p id="env-tip" style="margin-top: 15px; font-size: 13px; color: #f28d35; font-weight: 600;"></p>
             </div>
             
-            <p style="font-size: 11px; color: #99a; margin-top: 35px; font-weight: 600; letter-spacing: 1px;">CREATED DATE / JANUARY 29, 2026</p>
+            <p style="font-size: 11px; color: #99a; margin-top: 35px; font-weight: 600; letter-spacing: 1px;">CREATED DATE / JANUARY 30, 2026</p>
         </div>
     </div>
 
     <div id="ios-pwa-mask">
-        <div class="ios-guide-card">
+        <div class="ios-guide-card" id="ios-guide-content">
             <img src="/icon-192.png" style="width:60px; border-radius:12px; margin-bottom:15px;">
             <h3 style="color:#333; margin:0 0 15px 0;">添加 99ASMR 到桌面</h3>
             <div class="ios-step" style="display:flex; align-items:center; margin-bottom:10px; text-align:left;"><span class="step-id">1</span><p style="margin:0; font-size:14px; color:#444;">点击浏览器底部的 <b>“分享”</b> 图标</p></div>
@@ -182,7 +182,6 @@
     </div>
 
     <script>
-        // --- 1. 全局配置 ---
         const GATEWAY_API = "https://api.999551.xyz/";
         const UA = navigator.userAgent;
         const isWechat = /MicroMessenger/i.test(UA);
@@ -190,7 +189,6 @@
         const isSafari = /^((?!chrome|android).)*safari/i.test(UA);
         let deferredPrompt = null;
 
-        // --- 2. 升级处理函数 ---
         function handleAppUpdate() {
             const toast = document.getElementById('update-toast');
             if (toast) toast.innerText = "🚀 正在升级线路...";
@@ -201,10 +199,10 @@
             }).catch(() => location.reload());
         }
 
-        // --- 3. PWA 启动逻辑 ---
+        // PWA 启动检测
         (function() {
-            const isPwaLaunch = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
-            if (isPwaLaunch) {
+            const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+            if (isStandalone) {
                 document.getElementById('pwa-launch-screen').style.display = 'flex';
                 fetch(GATEWAY_API).then(r => r.json()).then(d => { 
                     if(d.pwa_url) window.location.replace(d.pwa_url); 
@@ -212,61 +210,63 @@
             }
         })();
 
-        // --- 4. 星空背景 ---
+        // 星空
         const canvas = document.getElementById('starCanvas');
         const ctx = canvas.getContext('2d');
         let w, h, stars = [];
-        function res() { 
-            w = canvas.width = window.innerWidth; 
-            h = canvas.height = window.innerHeight; 
-            stars = Array.from({length: 80}, () => ({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.2 })); 
-        }
+        function res() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; stars = Array.from({length: 80}, () => ({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.2 })); }
         window.onresize = res; res();
-        function draw() { 
-            ctx.fillStyle = '#0a0e14'; ctx.fillRect(0,0,w,h); 
-            stars.forEach(s => { 
-                ctx.globalAlpha = 0.4 + Math.abs(Math.sin(Date.now()*0.001)); 
-                ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 7); ctx.fill(); 
-            }); 
-            requestAnimationFrame(draw); 
-        }
+        function draw() { ctx.fillStyle = '#0a0e14'; ctx.fillRect(0,0,w,h); stars.forEach(s => { ctx.globalAlpha = 0.4 + Math.abs(Math.sin(Date.now()*0.001)); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 7); ctx.fill(); }); requestAnimationFrame(draw); }
         draw();
 
-        // --- 5. 环境检测与按钮逻辑 ---
-        window.addEventListener('beforeinstallprompt', (e) => { 
-            e.preventDefault(); deferredPrompt = e; 
-        });
+        window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
 
         window.onload = function() {
             const pwaBtn = document.getElementById('pwa-btn');
             const tip = document.getElementById('env-tip');
+            const iosMask = document.getElementById('ios-pwa-mask');
+            const iosContent = document.getElementById('ios-guide-content');
 
-            if (isWechat) { tip.innerText = "⚠️ 请点击右上角选择 [在Safari浏览器打开]"; }
-            else if (isIos && !isSafari) { tip.innerText = "⚠️ iOS 请使用自带 Safari 浏览器安装"; }
+            const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
 
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/sw.js').then(reg => {
-                    reg.onupdatefound = () => {
-                        const worker = reg.installing;
-                        worker.onstatechange = () => {
-                            if (worker.state === 'installed' && navigator.serviceWorker.controller) {
-                                document.getElementById('update-toast').style.display = 'block';
-                            }
-                        };
-                    };
-                });
+            // --- iOS 环境强引导逻辑 ---
+            if (isIos && !isStandalone) {
+                if (!isSafari) {
+                    // 修改遮罩内容为“跳转引导”
+                    iosContent.innerHTML = `
+                        <img src="/icon-192.png" style="width:60px; border-radius:12px; margin-bottom:15px;">
+                        <h3 style="color:#333; margin:0 0 10px 0;">检测到非 Safari 浏览器</h3>
+                        <p style="font-size:13px; color:#666; margin-bottom:20px;">由于 iOS 系统限制，安装 App 必须使用 <b>Safari浏览器</b>。</p>
+                        <div style="text-align:left; background:#f8f9fa; padding:15px; border-radius:12px; margin-bottom:20px;">
+                            <p style="margin:0 0 8px 0; font-size:14px; color:#444;">1. 点击屏幕右上角或下方的 <b>“分享”</b> 按钮</p>
+                            <p style="margin:0; font-size:14px; color:#444;">2. 选择 <b>“在 Safari 中打开”</b></p>
+                        </div>
+                        <button style="background:#333; color:#fff; border:none; width:100%; padding:14px; border-radius:14px; font-weight:bold; cursor:pointer;" onclick="document.getElementById('ios-pwa-mask').style.display='none'">我知道了</button>
+                    `;
+                    // 自动弹出
+                    setTimeout(() => { iosMask.style.display = 'block'; }, 800);
+                    tip.innerText = "⚠️ 请切换至 Safari 浏览器以安装 APP";
+                }
             }
 
             pwaBtn.onclick = async () => {
                 if (isIos) {
-                    if (!isSafari) { alert("iOS 必须使用 Safari 浏览器才能安装 PWA"); return; }
-                    document.getElementById('ios-pwa-mask').style.display = 'block';
+                    if (!isSafari) {
+                        iosMask.style.display = 'block';
+                    } else {
+                        // 如果是 Safari，确保内容是“添加到桌面”引导
+                        iosMask.style.display = 'block';
+                    }
                 } else if (deferredPrompt) {
                     deferredPrompt.prompt();
                 } else {
                     alert("请在 Chrome/Edge 浏览器菜单中选择 [安装应用]");
                 }
             };
+
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js');
+            }
         };
     </script>
 </body>
