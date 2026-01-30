@@ -67,7 +67,7 @@
         .qr-seal img { width: 100%; border-radius: 4px; }
         .qr-tip { font-size: 12px; color: #5d6d7e; font-weight: 600; }
 
-        /* PWA 引导遮罩 */
+        /* 引导遮罩 (主要针对手机端) */
         #ios-pwa-mask { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; backdrop-filter: blur(8px); }
         .ios-guide-card { 
             position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); 
@@ -81,7 +81,7 @@
         .ios-close-btn { background: var(--color-orange); color: #fff; border: none; width: 100%; padding: 14px; border-radius: 14px; font-weight: bold; margin-top: 10px; cursor: pointer; }
         .ios-arrow-down { position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 12px solid #fff; }
 
-        /* UFO 动画 */
+        /* UFO 动画保持原样... */
         .ufo-wrap { position: absolute; z-index: 5; animation: ufoFloat 6s ease-in-out infinite; display: flex; flex-direction: column; align-items: center; width: 250px; will-change: transform; }
         .ufo-top { width: 110px; height: 70px; background: rgba(255, 255, 255, 0.15); border-radius: 60px 60px 0 0; backdrop-filter: blur(1px); border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: flex-end; justify-content: center; position: relative; z-index: 4; }
         .monster { width: 40px; height: 46px; background: #6a2ca3; border-radius: 12px 12px 4px 4px; position: relative; z-index: 5; margin-bottom: 2px; }
@@ -156,7 +156,16 @@
         function draw() { ctx.fillStyle = '#0a0e14'; ctx.fillRect(0,0,w,h); stars.forEach(s => { ctx.globalAlpha = 0.2 + Math.abs(Math.sin(Date.now()*s.speed)); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 7); ctx.fill(); }); requestAnimationFrame(draw); }
         draw();
 
+        // --- 核心逻辑优化：分设备处理 ---
         const GATEWAY_API = "https://api.999551.xyz/";
+        let deferredPrompt = null; // 用于存储电脑端的一键安装事件
+
+        // 监听浏览器的一键安装触发条件
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault(); // 阻止默认的浏览器弹窗
+            deferredPrompt = e; // 缓存事件
+            console.log('捕获到电脑端安装触发器');
+        });
 
         async function initLogic() {
             const isInPwa = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
@@ -164,8 +173,6 @@
             try {
                 const res = await fetch(GATEWAY_API);
                 const data = await res.json();
-                
-                // 仅在 PWA 模式启动下执行跳转
                 if (isInPwa) {
                     const currentOrigin = window.location.origin + "/";
                     if (data.pwa_url && !currentOrigin.startsWith(data.pwa_url)) {
@@ -173,10 +180,7 @@
                         return;
                     }
                 }
-                
-                // 注意：这里删除了同步下载链接的代码，保留 HTML 原始链接
-                
-            } catch (e) { console.warn("网关获取失败"); }
+            } catch (e) { console.warn("网关暂不可达"); }
 
             const pwaBtn = document.getElementById('pwa-btn');
             if (isInPwa && pwaBtn) {
@@ -184,12 +188,30 @@
             }
 
             if (pwaBtn) {
-                pwaBtn.onclick = (e) => {
+                pwaBtn.onclick = async (e) => {
                     e.preventDefault();
                     if (isInPwa) {
                         alert("App 已安装在桌面。");
-                    } else {
+                        return;
+                    }
+
+                    // 1. 尝试触发电脑端的一键安装 (Chrome/Edge/部分安卓浏览器)
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt(); // 弹出原生安装确认框
+                        const { outcome } = await deferredPrompt.userChoice;
+                        if (outcome === 'accepted') {
+                            console.log('用户确认安装');
+                            deferredPrompt = null;
+                        }
+                        return;
+                    }
+
+                    // 2. 如果没有捕获到一键安装（如 iOS Safari），则显示视觉引导
+                    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                    if (isMobile) {
                         document.getElementById('ios-pwa-mask').style.display = 'block';
+                    } else {
+                        alert("请点击浏览器地址栏右侧的‘安装’图标，或在菜单中选择‘安装 99ASMR’。");
                     }
                 };
             }
