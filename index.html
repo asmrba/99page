@@ -67,6 +67,7 @@
         .qr-seal img { width: 100%; border-radius: 4px; }
         .qr-tip { font-size: 12px; color: #5d6d7e; font-weight: 600; }
 
+        /* PWA 引导遮罩 */
         #ios-pwa-mask { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; backdrop-filter: blur(8px); }
         .ios-guide-card { 
             position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); 
@@ -80,7 +81,7 @@
         .ios-close-btn { background: var(--color-orange); color: #fff; border: none; width: 100%; padding: 14px; border-radius: 14px; font-weight: bold; margin-top: 10px; cursor: pointer; }
         .ios-arrow-down { position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 12px solid #fff; }
 
-        /* UFO 动画省略... 保持原样 */
+        /* UFO 动画 */
         .ufo-wrap { position: absolute; z-index: 5; animation: ufoFloat 6s ease-in-out infinite; display: flex; flex-direction: column; align-items: center; width: 250px; will-change: transform; }
         .ufo-top { width: 110px; height: 70px; background: rgba(255, 255, 255, 0.15); border-radius: 60px 60px 0 0; backdrop-filter: blur(1px); border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: flex-end; justify-content: center; position: relative; z-index: 4; }
         .monster { width: 40px; height: 46px; background: #6a2ca3; border-radius: 12px 12px 4px 4px; position: relative; z-index: 5; margin-bottom: 2px; }
@@ -147,7 +148,6 @@
     </div>
 
     <script>
-        // 星空控制...
         const canvas = document.getElementById('starCanvas');
         const ctx = canvas.getContext('2d');
         let w, h, stars = [];
@@ -156,18 +156,16 @@
         function draw() { ctx.fillStyle = '#0a0e14'; ctx.fillRect(0,0,w,h); stars.forEach(s => { ctx.globalAlpha = 0.2 + Math.abs(Math.sin(Date.now()*s.speed)); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 7); ctx.fill(); }); requestAnimationFrame(draw); }
         draw();
 
-        // --- 核心修正逻辑 ---
         const GATEWAY_API = "https://api.999551.xyz/";
 
         async function initLogic() {
-            // 检测是否是从桌面图标启动的 PWA 环境
             const isInPwa = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
 
             try {
                 const res = await fetch(GATEWAY_API);
                 const data = await res.json();
                 
-                // 1. 【只有在 PWA 模式下启动】才执行跳转内容页
+                // 仅在 PWA 模式启动下执行跳转
                 if (isInPwa) {
                     const currentOrigin = window.location.origin + "/";
                     if (data.pwa_url && !currentOrigin.startsWith(data.pwa_url)) {
@@ -175,19 +173,11 @@
                         return;
                     }
                 }
-
-                // 2. 【在网页模式下】仅同步下载链接和二维码，不执行任何跳转
-                const androidBtn = document.getElementById('android-btn');
-                const qrImg = document.getElementById('qr-img');
                 
-                if (data.download_url) {
-                    if (androidBtn) androidBtn.href = data.download_url;
-                    if (qrImg) qrImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(data.download_url);
-                }
+                // 注意：这里删除了同步下载链接的代码，保留 HTML 原始链接
+                
+            } catch (e) { console.warn("网关获取失败"); }
 
-            } catch (e) { console.warn("网关数据同步失败"); }
-
-            // 3. 按钮点击处理
             const pwaBtn = document.getElementById('pwa-btn');
             if (isInPwa && pwaBtn) {
                 pwaBtn.innerText = "App 已安装";
@@ -197,9 +187,8 @@
                 pwaBtn.onclick = (e) => {
                     e.preventDefault();
                     if (isInPwa) {
-                        alert("App 已安装，请在桌面寻找图标。");
+                        alert("App 已安装在桌面。");
                     } else {
-                        // 强制弹出本地安装引导，不再跳转
                         document.getElementById('ios-pwa-mask').style.display = 'block';
                     }
                 };
