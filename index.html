@@ -78,7 +78,7 @@
         .ufo-dot { width: 10px; height: 10px; border-radius: 50%; animation: lightBreath 6s infinite ease-in-out; will-change: background; }
         .ufo-beam { width: 180px; height: 400px; clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%); margin: -10px auto 0; filter: blur(2px); animation: beamBreath 6s infinite ease-in-out; will-change: background; }
 
-        /* --- iOS PWA 引导弹窗样式 --- */
+        /* --- 引导弹窗样式 --- */
         #ios-pwa-mask { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; backdrop-filter: blur(6px); cursor: default; }
         .ios-guide-card { 
             position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); 
@@ -146,7 +146,7 @@
             <div class="download-zone">
                 <div class="btn-group">
                     <a id="android-btn" href="https://gh-proxy.org/https://github.com/asmrba/99app/releases/latest/download/app-release.apk" class="btn btn-orange">Android 点击下载</a>
-                    <button id="ios-download-btn" class="btn btn-outline">iOS 极速下载</button>
+                    <button id="ios-download-btn" class="btn btn-outline">桌面版 (PWA)</button>
                 </div>
                 
                 <div class="qr-container">
@@ -164,18 +164,18 @@
     <div id="ios-pwa-mask">
         <div class="ios-guide-card">
             <img src="/icon-192.png" class="ios-logo" alt="99asmr">
-            <h3 style="color:#333; margin:0 0 20px 0;">安装 99ASMR 到桌面</h3>
+            <h3 style="color:#333; margin:0 0 20px 0;">添加 99ASMR 到桌面</h3>
             <div class="ios-step">
                 <span class="step-id">1</span>
-                <p>点击 Safari 底部工具栏的 <b>“分享”</b> 按钮 <img src="https://img.icons8.com/ios/50/000000/export.png" width="16" style="vertical-align:middle;"></p>
+                <p>点击浏览器底部的 <b>“分享/菜单”</b> 按钮</p>
             </div>
             <div class="ios-step">
                 <span class="step-id">2</span>
-                <p>在菜单中找到并点击 <b>“添加到主屏幕”</b> <img src="https://img.icons8.com/ios/50/000000/plus-math.png" width="16" style="vertical-align:middle;"></p>
+                <p>找到并点击 <b>“添加到主屏幕”</b> 或 <b>“安装应用”</b></p>
             </div>
             <div class="ios-step">
                 <span class="step-id">3</span>
-                <p>点击右上角的 <b>“添加”</b> 即可安装完成</p>
+                <p>确认后，桌面将出现 App 图标，畅享体验</p>
             </div>
             <button class="ios-close-btn" onclick="document.getElementById('ios-pwa-mask').style.display='none'">我知道了</button>
             <div class="ios-arrow-down"></div>
@@ -194,7 +194,6 @@
     </div>
 
     <script>
-        // --- 1. 星空背景控制 ---
         const canvas = document.getElementById('starCanvas');
         const ctx = canvas.getContext('2d');
         let w, h, stars = [];
@@ -225,31 +224,23 @@
         }
         draw();
 
-        // --- 2. 核心逻辑：网关同步 & 引导 ---
+        // --- 核心逻辑：不再拦截设备 ---
         const GATEWAY_API = "https://api.999551.xyz/";
         let cachedConfig = null;
 
         async function initAppLogic() {
-            // A. 获取网关配置并同步下载链接
             try {
                 const res = await fetch(GATEWAY_API);
                 cachedConfig = await res.json();
-                
-                // 同步安卓下载链接
                 const androidBtn = document.getElementById('android-btn');
                 if (androidBtn && cachedConfig.download_url) {
                     androidBtn.href = cachedConfig.download_url;
                 }
-            } catch (e) {
-                console.warn("网关暂不可达，使用本地默认链接");
-            }
+            } catch (e) { console.warn("网关暂不可达"); }
 
-            // B. iOS 下载按钮处理
             const iosBtn = document.getElementById('ios-download-btn');
-            const isIos = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
             const isInPwa = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
 
-            // 如果已经在应用模式中
             if (isInPwa && iosBtn) {
                 iosBtn.innerText = "App 已安装";
             }
@@ -257,34 +248,28 @@
             if (iosBtn) {
                 iosBtn.addEventListener('click', () => {
                     if (isInPwa) {
-                        alert("您已安装 App，直接在桌面打开即可。");
+                        alert("您已安装 App。");
                         return;
                     }
 
-                    if (isIos) {
-                        const currentOrigin = window.location.origin + "/";
-                        // 检查是否需要跳转到网关推荐的 PWA 线路
-                        if (cachedConfig && cachedConfig.pwa_url && !currentOrigin.startsWith(cachedConfig.pwa_url)) {
-                            if (confirm("为了确保正常安装，即将为您切换至官方认证线路。")) {
-                                window.location.href = cachedConfig.pwa_url;
-                            }
-                        } else {
-                            // 域名匹配，直接显示 PWA 引导
-                            document.getElementById('ios-pwa-mask').style.display = 'block';
+                    // 依然保留网关迁移检查，但不强制拦截设备
+                    const currentOrigin = window.location.origin + "/";
+                    if (cachedConfig && cachedConfig.pwa_url && !currentOrigin.startsWith(cachedConfig.pwa_url)) {
+                        if (confirm("即将为您切换至官方认证安装线路。")) {
+                            window.location.href = cachedConfig.pwa_url;
                         }
                     } else {
-                        alert("此按钮仅限 iOS 引导安装，安卓用户请点击 Android 下载链接。");
+                        // 所有人点击都直接显示弹窗
+                        document.getElementById('ios-pwa-mask').style.display = 'block';
                     }
                 });
             }
         }
 
-        // 注册 Service Worker
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js');
         }
 
-        // 初始化
         window.onload = initAppLogic;
     </script>
 </body>
