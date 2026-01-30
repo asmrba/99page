@@ -29,76 +29,58 @@
             touch-action: none;
         }
 
+        /* --- 启动页动画 --- */
+        #pwa-launch-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #0a0e14; z-index: 1000000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .launch-logo { width: 100px; height: 100px; border-radius: 22px; margin-bottom: 20px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } }
+        .launch-text { color: #fff; font-size: 18px; font-weight: bold; letter-spacing: 2px; }
+
+        /* --- 原有星空 & 下载页样式 --- */
         #starCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
-
         .top-nav { position: absolute; top: 25px; left: 25px; z-index: 100; }
-        .btn-home {
-            background: var(--btn-dark);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #fff; padding: 10px 22px; border-radius: 25px;
-            text-decoration: none; font-size: 13px; font-weight: 600;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: 0.3s;
-            display: flex; align-items: center; gap: 6px;
-        }
-        .btn-home:hover { background: #2c3e50; transform: translateY(-2px); border-color: var(--color-orange); }
-
-        .moon-giant {
-            position: absolute; z-index: 2;
-            background: radial-gradient(circle at 75% 50%, #ffffff 0%, #e8e8e8 50%, #b0b0b0 100%);
-            border-radius: 50%; display: flex; align-items: center; justify-content: flex-end;
-            box-sizing: border-box; box-shadow: 0 0 80px rgba(255, 255, 255, 0.2), inset -40px 0 100px rgba(0,0,0,0.1);
-            transition: all 0.5s ease;
-        }
-        .crater { position: absolute; background: rgba(0, 0, 0, 0.06); border-radius: 50%; box-shadow: inset 5px 5px 10px rgba(0,0,0,0.1), 2px 2px 5px rgba(255,255,255,0.7); }
-
-        .content { z-index: 10; transition: all 0.5s ease; position: relative; }
-        h1 { font-size: clamp(50px, 10vw, 88px); margin: 0; font-weight: 900; letter-spacing: -3px; line-height: 1; color: #2c3e50; }
+        .btn-home { background: var(--btn-dark); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 10px 22px; border-radius: 25px; text-decoration: none; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+        .moon-giant { position: absolute; z-index: 2; background: radial-gradient(circle at 75% 50%, #ffffff 0%, #e8e8e8 50%, #b0b0b0 100%); border-radius: 50%; display: flex; align-items: center; justify-content: flex-end; box-sizing: border-box; box-shadow: 0 0 80px rgba(255, 255, 255, 0.2); }
+        .content { z-index: 10; position: relative; }
+        h1 { font-size: clamp(50px, 10vw, 88px); margin: 0; font-weight: 900; color: #2c3e50; }
         .slogan { font-size: clamp(18px, 4vw, 28px); font-weight: 800; margin: 15px 0 10px; color: #2c3e50; }
         .desc { font-size: 14px; color: #5d6d7e; line-height: 1.8; margin-bottom: 25px; }
-
-        .download-zone { display: flex; flex-direction: column; gap: 20px; align-items: flex-start; }
         .btn-group { display: flex; gap: 12px; }
-        .btn { padding: 12px 35px; border-radius: 30px; text-decoration: none; font-size: 14px; font-weight: 800; transition: 0.3s; text-align: center; cursor: pointer; border: none; }
+        .btn { padding: 12px 35px; border-radius: 30px; text-decoration: none; font-size: 14px; font-weight: 800; text-align: center; cursor: pointer; border: none; }
         .btn-orange { background: var(--color-orange); color: #fff; box-shadow: 0 5px 15px rgba(242, 141, 53, 0.4); }
         .btn-outline { border: 2px solid #2c3e50; color: #2c3e50; background: transparent; }
 
-        .qr-container { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-        .qr-seal { background: rgba(255, 255, 255, 0.85); padding: 8px; border-radius: 10px; width: 100px; height: 100px; backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; }
-        .qr-seal img { width: 100%; border-radius: 4px; }
-        .qr-tip { font-size: 12px; color: #5d6d7e; font-weight: 600; }
-
-        /* 引导遮罩 (主要针对手机端) */
+        /* iOS/移动端引导遮罩 */
         #ios-pwa-mask { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; backdrop-filter: blur(8px); }
-        .ios-guide-card { 
-            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); 
-            width: 90%; max-width: 380px; background: #fff; border-radius: 20px; padding: 25px; 
-            text-align: center; box-sizing: border-box; animation: iosSlide 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-        }
-        @keyframes iosSlide { from { bottom: -100%; } to { bottom: 30px; } }
-        .ios-logo { width: 60px; height: 60px; border-radius: 13px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .ios-step { display: flex; align-items: flex-start; text-align: left; margin-bottom: 15px; color: #444; font-size: 14px; line-height: 1.6; }
-        .step-id { background: var(--color-orange); color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; margin-right: 12px; flex-shrink: 0; margin-top: 2px; }
-        .ios-close-btn { background: var(--color-orange); color: #fff; border: none; width: 100%; padding: 14px; border-radius: 14px; font-weight: bold; margin-top: 10px; cursor: pointer; }
-        .ios-arrow-down { position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 12px solid #fff; }
+        .ios-guide-card { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 380px; background: #fff; border-radius: 20px; padding: 25px; text-align: center; box-sizing: border-box; }
+        .ios-step { display: flex; align-items: flex-start; text-align: left; margin-bottom: 15px; color: #444; font-size: 14px; }
+        .step-id { background: var(--color-orange); color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0; }
+        
+        /* UFO 动画 */
+        .ufo-wrap { position: absolute; z-index: 5; animation: ufoFloat 6s ease-in-out infinite; display: flex; flex-direction: column; align-items: center; width: 250px; }
+        .ufo-top { width: 110px; height: 70px; background: rgba(255, 255, 255, 0.15); border-radius: 60px 60px 0 0; backdrop-filter: blur(1px); border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: flex-end; justify-content: center; position: relative; }
+        .monster { width: 40px; height: 46px; background: #6a2ca3; border-radius: 12px 12px 4px 4px; position: relative; }
+        .ufo-body { width: 250px; height: 70px; background: linear-gradient(to bottom, #bdc3c7, #5c6267); border-radius: 50%; margin-top: -35px; display: flex; justify-content: center; align-items: center; gap: 12px; position: relative; }
+        .ufo-dot { width: 10px; height: 10px; border-radius: 50%; animation: lightBreath 6s infinite ease-in-out; }
+        .ufo-beam { width: 180px; height: 400px; background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), transparent); clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%); margin: -10px auto 0; filter: blur(2px); }
 
-        /* UFO 动画保持原样... */
-        .ufo-wrap { position: absolute; z-index: 5; animation: ufoFloat 6s ease-in-out infinite; display: flex; flex-direction: column; align-items: center; width: 250px; will-change: transform; }
-        .ufo-top { width: 110px; height: 70px; background: rgba(255, 255, 255, 0.15); border-radius: 60px 60px 0 0; backdrop-filter: blur(1px); border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: flex-end; justify-content: center; position: relative; z-index: 4; }
-        .monster { width: 40px; height: 46px; background: #6a2ca3; border-radius: 12px 12px 4px 4px; position: relative; z-index: 5; margin-bottom: 2px; }
-        .monster::after { content: ''; position: absolute; width: 6px; height: 6px; background: #fff; border-radius: 50%; top: 11px; left: 10px; box-shadow: 15px 0 0 #fff; }
-        .ufo-body { width: 250px; height: 70px; background: linear-gradient(to bottom, #bdc3c7, #5c6267); border-radius: 50%; margin-top: -35px; display: flex; justify-content: center; align-items: center; gap: 12px; position: relative; z-index: 6; }
-        .ufo-dot { width: 10px; height: 10px; border-radius: 50%; animation: lightBreath 6s infinite ease-in-out; will-change: background; }
-        .ufo-beam { width: 180px; height: 400px; clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%); margin: -10px auto 0; filter: blur(2px); animation: beamBreath 6s infinite ease-in-out; will-change: background; }
-
-        @keyframes lightBreath { 0%, 100% { background: var(--color-red); box-shadow: 0 0 15px var(--color-red); opacity: 1; } 33% { background: var(--color-yellow); box-shadow: 0 0 15px var(--color-yellow); opacity: 1; } 66% { background: var(--color-green); box-shadow: 0 0 15px var(--color-green); opacity: 1; } 16%, 49%, 82% { opacity: 0.3; } }
-        @keyframes beamBreath { 0%, 100% { background: linear-gradient(to bottom, rgba(255, 59, 59, 0.35), transparent); } 33% { background: linear-gradient(to bottom, rgba(241, 196, 15, 0.35), transparent); } 66% { background: linear-gradient(to bottom, rgba(38, 222, 129, 0.35), transparent); } }
         @keyframes ufoFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-35px); } }
+        @keyframes lightBreath { 0%, 100% { background: var(--color-red); box-shadow: 0 0 15px var(--color-red); } 33% { background: var(--color-yellow); } 66% { background: var(--color-green); } }
 
         @media (min-width: 801px) { .moon-giant { top: 50%; left: -45vh; transform: translateY(-50%); width: 140vh; height: 140vh; padding-right: 18vh; } .content { width: 440px; text-align: left; } .ufo-wrap { top: 40%; right: 15%; } }
-        @media (max-width: 800px) { .moon-giant { top: -20vh; left: 50%; transform: translateX(-50%); width: 100vh; height: 100vh; padding-top: 38vh; justify-content: center; align-items: flex-start; } .content { width: 85%; text-align: center; } .download-zone { align-items: center; } .btn-group { justify-content: center; flex-direction: column; align-items: center; } .btn { width: 220px; } .qr-container { display: none; } .ufo-wrap { bottom: -20px; right: 50%; transform: translateX(50%); top: auto; scale: 0.7; } }
+        @media (max-width: 800px) { .moon-giant { top: -20vh; left: 50%; transform: translateX(-50%); width: 100vh; height: 100vh; padding-top: 38vh; justify-content: center; align-items: flex-start; } .content { width: 85%; text-align: center; } .download-zone { align-items: center; } .btn-group { flex-direction: column; align-items: center; } .ufo-wrap { bottom: -20px; right: 50%; transform: translateX(50%); top: auto; scale: 0.7; } }
     </style>
 </head>
 <body>
+
+    <div id="pwa-launch-screen" style="display: none;">
+        <img src="/icon-512.png" class="launch-logo">
+        <div class="launch-text">99ASMR</div>
+        <div style="color:#555; font-size:12px; margin-top:15px;">正在连接安全线路...</div>
+    </div>
 
     <canvas id="starCanvas"></canvas>
 
@@ -107,7 +89,6 @@
     </div>
 
     <div class="moon-giant">
-        <div class="crater c1"></div>
         <div class="content">
             <h1>99ASMR</h1>
             <div class="slogan">官方APP下载</div>
@@ -120,10 +101,6 @@
                     <a id="android-btn" href="https://gh-proxy.org/https://github.com/asmrba/99app/releases/latest/download/app-release.apk" class="btn btn-orange">Android 点击下载</a>
                     <button id="pwa-btn" class="btn btn-outline">桌面版 (PWA)</button>
                 </div>
-                <div class="qr-container">
-                    <div class="qr-seal"><img id="qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://gh-proxy.org/https://github.com/asmrba/99app/releases/latest/download/app-release.apk"></div>
-                    <span class="qr-tip">扫一扫下载</span>
-                </div>
             </div>
             <p style="font-size: 11px; color: #99a; margin-top: 35px; font-weight: 600;">CREATED DATE / JANUARY 29, 2026</p>
         </div>
@@ -132,12 +109,11 @@
     <div id="ios-pwa-mask">
         <div class="ios-guide-card">
             <img src="/icon-192.png" class="ios-logo">
-            <h3 style="color:#333; margin:0 0 20px 0;">添加 99ASMR 到桌面</h3>
+            <h3 style="color:#333; margin:0 0 15px 0;">添加 99ASMR 到桌面</h3>
             <div class="ios-step"><span class="step-id">1</span><p>点击浏览器底部的 <b>“分享”</b> 或 <b>“菜单”</b> 按钮</p></div>
             <div class="ios-step"><span class="step-id">2</span><p>找到并点击 <b>“添加到主屏幕”</b> 或 <b>“安装应用”</b></p></div>
             <div class="ios-step"><span class="step-id">3</span><p>确认后，桌面将出现 App 图标，畅享体验</p></div>
-            <button class="ios-close-btn" onclick="document.getElementById('ios-pwa-mask').style.display='none'">我知道了</button>
-            <div class="ios-arrow-down"></div>
+            <button class="ios-close-btn" style="background:var(--color-orange); color:#fff; border:none; width:100%; padding:14px; border-radius:14px; font-weight:bold; cursor:pointer;" onclick="document.getElementById('ios-pwa-mask').style.display='none'">我知道了</button>
         </div>
     </div>
 
@@ -148,41 +124,44 @@
     </div>
 
     <script>
+        // --- 核心：分流逻辑 (写在最前) ---
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isPwaLaunch = urlParams.get('mode') === 'pwa' || window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+            
+            if (isPwaLaunch) {
+                // 立即显示启动页遮盖背景
+                document.write('<style>#pwa-launch-screen{display:flex !important;}</style>');
+                
+                // 请求网关并跳转
+                fetch("https://api.999551.xyz/")
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.pwa_url) window.location.replace(data.pwa_url);
+                    })
+                    .catch(() => {
+                        setTimeout(() => { document.querySelector('.launch-text').innerText = "线路维护中..."; }, 3000);
+                    });
+            }
+        })();
+
+        // --- 视觉动画控制 ---
         const canvas = document.getElementById('starCanvas');
         const ctx = canvas.getContext('2d');
         let w, h, stars = [];
-        function res() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; const count = w > 800 ? 100 : 50; stars = Array.from({length: count}, () => ({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.2, speed: 0.005+Math.random()*0.01 })); }
+        function res() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; stars = Array.from({length: 80}, () => ({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.2, speed: 0.01 })); }
         window.onresize = res; res();
-        function draw() { ctx.fillStyle = '#0a0e14'; ctx.fillRect(0,0,w,h); stars.forEach(s => { ctx.globalAlpha = 0.2 + Math.abs(Math.sin(Date.now()*s.speed)); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 7); ctx.fill(); }); requestAnimationFrame(draw); }
+        function draw() { ctx.fillStyle = '#0a0e14'; ctx.fillRect(0,0,w,h); stars.forEach(s => { ctx.globalAlpha = 0.4 + Math.abs(Math.sin(Date.now()*0.001)); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 7); ctx.fill(); }); requestAnimationFrame(draw); }
         draw();
 
-        // --- 核心逻辑优化：分设备处理 ---
-        const GATEWAY_API = "https://api.999551.xyz/";
-        let deferredPrompt = null; // 用于存储电脑端的一键安装事件
-
-        // 监听浏览器的一键安装触发条件
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault(); // 阻止默认的浏览器弹窗
-            deferredPrompt = e; // 缓存事件
-            console.log('捕获到电脑端安装触发器');
-        });
+        // --- PWA 引导按钮逻辑 ---
+        let deferredPrompt = null;
+        window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
 
         async function initLogic() {
+            const pwaBtn = document.getElementById('pwa-btn');
             const isInPwa = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
 
-            try {
-                const res = await fetch(GATEWAY_API);
-                const data = await res.json();
-                if (isInPwa) {
-                    const currentOrigin = window.location.origin + "/";
-                    if (data.pwa_url && !currentOrigin.startsWith(data.pwa_url)) {
-                        window.location.replace(data.pwa_url);
-                        return;
-                    }
-                }
-            } catch (e) { console.warn("网关暂不可达"); }
-
-            const pwaBtn = document.getElementById('pwa-btn');
             if (isInPwa && pwaBtn) {
                 pwaBtn.innerText = "App 已安装";
             }
@@ -190,37 +169,21 @@
             if (pwaBtn) {
                 pwaBtn.onclick = async (e) => {
                     e.preventDefault();
-                    if (isInPwa) {
-                        alert("App 已安装在桌面。");
-                        return;
-                    }
+                    if (isInPwa) return;
 
-                    // 1. 尝试触发电脑端的一键安装 (Chrome/Edge/部分安卓浏览器)
+                    // 1. 尝试触发 Chrome 原生安装
                     if (deferredPrompt) {
-                        deferredPrompt.prompt(); // 弹出原生安装确认框
-                        const { outcome } = await deferredPrompt.userChoice;
-                        if (outcome === 'accepted') {
-                            console.log('用户确认安装');
-                            deferredPrompt = null;
-                        }
-                        return;
-                    }
-
-                    // 2. 如果没有捕获到一键安装（如 iOS Safari），则显示视觉引导
-                    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                    if (isMobile) {
-                        document.getElementById('ios-pwa-mask').style.display = 'block';
+                        deferredPrompt.prompt();
+                        deferredPrompt = null;
                     } else {
-                        alert("请点击浏览器地址栏右侧的‘安装’图标，或在菜单中选择‘安装 99ASMR’。");
+                        // 2. 否则显示手动引导
+                        document.getElementById('ios-pwa-mask').style.display = 'block';
                     }
                 };
             }
         }
 
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js');
-        }
-
+        if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }
         window.onload = initLogic;
     </script>
 </body>
