@@ -10,9 +10,15 @@
     <link rel="apple-touch-icon" href="/icon-192.png">
     
     <title>99ASMR - 官方APP下载</title>
+    
+    <script src="https://cdn.staticfile.org/qrcodejs/1.0.0/qrcode.min.js"></script>
+
     <style>
         :root {
             --bg-dark: #0a0e14;
+            --color-red: #ff3b3b;
+            --color-yellow: #f1c40f;
+            --color-green: #26de81;
             --btn-dark: #1d252c;
             --color-orange: #f28d35;
         }
@@ -44,7 +50,7 @@
         }
         @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* UI 布局 */
+        /* UI 背景 */
         #starCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
         .top-nav { position: absolute; top: 25px; left: 25px; z-index: 100; }
         .btn-home { background: var(--btn-dark); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 10px 22px; border-radius: 25px; text-decoration: none; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
@@ -54,6 +60,7 @@
         .slogan { font-size: clamp(18px, 4vw, 28px); font-weight: 800; margin: 15px 0 10px; color: #2c3e50; }
         .desc { font-size: 14px; color: #5d6d7e; line-height: 1.8; margin-bottom: 25px; }
         
+        /* 按钮与二维码 */
         .btn-group { display: flex; gap: 12px; position: relative; }
         .btn { padding: 12px 35px; border-radius: 30px; text-decoration: none; font-size: 14px; font-weight: 800; text-align: center; cursor: pointer; border: none; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; }
         .btn-orange { background: var(--color-orange); color: #fff; box-shadow: 0 5px 15px rgba(242, 141, 53, 0.4); }
@@ -67,11 +74,14 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.5); opacity: 0; visibility: hidden; transition: 0.3s;
             z-index: 1000; display: flex; flex-direction: column; align-items: center; gap: 8px;
         }
-        .qr-popover img { width: 120px; height: 120px; border-radius: 8px; background: #fff; padding: 4px; }
+        /* 二维码容器样式 */
+        #qrcode { background: #fff; padding: 6px; border-radius: 8px; line-height: 0; }
+        #qrcode img { width: 120px; height: 120px; }
+        
         .qr-popover span { color: #fff; font-size: 11px; font-weight: 800; }
         .android-download-wrapper:hover .qr-popover { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
 
-        /* --- [iOS 核心遮罩] --- */
+        /* --- [iOS 遮罩] --- */
         #ios-pwa-mask { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; backdrop-filter: blur(8px); }
         .ios-guide-card { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 380px; background: #fff; border-radius: 20px; padding: 25px; text-align: center; box-sizing: border-box; }
         .step-id { background: var(--color-orange); color: #fff; width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-right: 12px; }
@@ -82,12 +92,24 @@
         .monster { width: 40px; height: 46px; background: #6a2ca3; border-radius: 12px 12px 4px 4px; position: relative; z-index: 5; }
         .ufo-body { width: 250px; height: 70px; background: linear-gradient(to bottom, #bdc3c7, #5c6267); border-radius: 50%; margin-top: -35px; display: flex; justify-content: center; align-items: center; gap: 12px; position: relative; z-index: 6; }
         .ufo-dot { width: 10px; height: 10px; border-radius: 50%; animation: lightBreath 6s infinite ease-in-out; }
-        .ufo-beam { width: 180px; height: 300px; clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%); margin: -10px auto 0; filter: blur(2px); background: linear-gradient(to bottom, rgba(255, 59, 59, 0.35), transparent); animation: beamBreath 6s infinite ease-in-out; }
+        .ufo-beam { 
+            width: 180px; height: 300px; 
+            clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%); 
+            margin: -10px auto 0; filter: blur(2px); 
+            background: linear-gradient(to bottom, rgba(255, 59, 59, 0.35), transparent); 
+            animation: beamBreath 6s infinite ease-in-out; 
+        }
 
+        @keyframes lightBreath { 0%, 100% { background: var(--color-red); } 33% { background: var(--color-yellow); } 66% { background: var(--color-green); } }
+        @keyframes beamBreath { 
+            0%, 100% { background: linear-gradient(to bottom, rgba(255, 59, 59, 0.35), transparent); } 
+            33% { background: linear-gradient(to bottom, rgba(241, 196, 15, 0.35), transparent); } 
+            66% { background: linear-gradient(to bottom, rgba(38, 222, 129, 0.35), transparent); } 
+        }
         @keyframes ufoFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-35px); } }
 
         @media (min-width: 801px) { .moon-giant { top: 50%; left: -45vh; transform: translateY(-50%); width: 140vh; height: 140vh; padding-right: 18vh; } .content { width: 460px; text-align: left; } .ufo-wrap { top: 40%; right: 15%; } }
-        @media (max-width: 800px) { .moon-giant { top: -20vh; left: 50%; transform: translateX(-50%); width: 100vh; height: 100vh; padding-top: 38vh; justify-content: center; align-items: flex-start; } .content { width: 85%; text-align: center; } .btn-group { flex-direction: column; align-items: center; } .qr-popover { display: none; } .ufo-wrap { bottom: -20px; right: 50%; transform: translateX(50%); top: auto; scale: 0.7; } }
+        @media (max-width: 800px) { .moon-giant { top: -20vh; left: 50%; transform: translateX(-50%); width: 100vh; height: 100vh; padding-top: 38vh; justify-content: center; align-items: flex-start; } .content { width: 85%; text-align: center; } .download-zone { align-items: center; } .btn-group { flex-direction: column; align-items: center; } .qr-popover { display: none; } .ufo-wrap { bottom: -20px; right: 50%; transform: translateX(50%); top: auto; scale: 0.7; } }
     </style>
 </head>
 <body>
@@ -97,7 +119,7 @@
     <div id="pwa-launch-screen">
         <img src="/icon-512.png" class="launch-logo">
         <div class="launch-text">99ASMR</div>
-        <div style="color:#555; font-size:12px; margin-top:15px;">加密链路连接中...</div>
+        <div style="color:#555; font-size:12px; margin-top:15px;">加密线路连接中...</div>
     </div>
 
     <div id="update-toast" onclick="handleAppUpdate()">✨ 发现新版本，点击立即体验</div>
@@ -116,17 +138,16 @@
                 <div class="btn-group">
                     <div class="android-download-wrapper">
                         <div class="qr-popover">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://gh-proxy.org/https://github.com/asmrba/99app/releases/download/v1.0.1/app-arm64-v8a-release.apk">
+                            <div id="qrcode"></div>
                             <span>手机扫码 极速下载</span>
                         </div>
-                        <a id="android-btn" href="https://gh-proxy.org/https://github.com/asmrba/99app/releases/download/v1.0.1/app-arm64-v8a-release.apk" class="btn btn-orange">
-                            Android 立即下载
-                        </a>
+                        <a id="android-btn" href="#" class="btn btn-orange">Android 立即下载</a>
                     </div>
                     <button id="pwa-btn" class="btn btn-outline">IOS版(PWA)安装</button>
                 </div>
                 <p id="env-tip" style="margin-top: 15px; font-size: 13px; color: #f28d35; font-weight: 600;"></p>
             </div>
+            <p style="font-size: 11px; color: #99a; margin-top: 35px; font-weight: 600;">UPDATED / JANUARY 30, 2026</p>
         </div>
     </div>
 
@@ -141,7 +162,10 @@
     </div>
 
     <script>
+        // 【核心配置】以后换链接只改这里！！！
+        const APK_URL = "https://gh-proxy.org/https://github.com/asmrba/99app/releases/download/v1.0.1/app-arm64-v8a-release.apk";
         const GATEWAY_API = "https://api.999551.xyz/";
+
         const safariIcon = `<svg style="width:22px; height:22px; vertical-align:middle; margin:0 2px;" viewBox="0 0 1024 1024"><path d="M736 448v128c0 17.7-14.3 32-32 32s-32-14.3-32-32V448c0-53-43-96-96-96H256c-53 0-96 43-96 96v320c0 53 43 96 96 96h320c53 0 96-43 96-96V704c0-17.7 14.3-32 32-32s32 14.3 32 32v64c0 88.4-71.6 160-160 160H256c-88.4 0-160-71.6-160-160V448c0-88.4 71.6-160 160-160h320c88.4 0 160 71.6 160 160z" fill="#007AFF"></path><path d="M480 96c0-17.7 14.3-32 32-32s32 14.3 32 32v416c0 17.7-14.3 32-32 32s-32-14.3-32-32V96z" fill="#007AFF"></path><path d="M512 64l-128 128c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L512 157.3l82.7 82.7c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L512 64z" fill="#007AFF"></path></svg>`;
 
         const UA = navigator.userAgent;
@@ -150,20 +174,29 @@
         const isSafari = /Safari/i.test(UA) && !/Chrome|CriOS|Android|MQQBrowser|UCBrowser|Quark|Baiduboxapp|EdgiOS|FxiOS|Opt\/|MicroMessenger|QQ\//i.test(UA);
         let deferredPrompt = null;
 
+        // 1. 初始化链接和二维码
+        function initAppLinks() {
+            // 更新按钮链接
+            document.getElementById('android-btn').href = APK_URL;
+            // 绘制二维码
+            new QRCode(document.getElementById("qrcode"), {
+                text: APK_URL,
+                width: 120,
+                height: 120,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        }
+
         function handleAppUpdate() {
             fetch(GATEWAY_API).then(r => r.json()).then(d => {
                 if(d.pwa_url) window.location.replace(d.pwa_url); else location.reload();
             });
         }
 
-        // 核心功能：复制并提示
         function copyAndClose() {
-            const el = document.createElement('textarea');
-            el.value = window.location.href;
-            document.body.appendChild(el);
-            el.select();
-            document.execCommand('copy');
-            document.body.removeChild(el);
+            const el = document.createElement('textarea'); el.value = window.location.href; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
             alert("网址已复制！请打开 Safari 粘贴访问。");
             document.getElementById('ios-pwa-mask').style.display = 'none';
         }
@@ -176,19 +209,17 @@
             }
         })();
 
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-        });
+        window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
 
         window.onload = function() {
+            initAppLinks(); // 加载二维码和链接
+
             const pwaBtn = document.getElementById('pwa-btn');
             const iosMask = document.getElementById('ios-pwa-mask');
             const iosContent = document.getElementById('ios-guide-content');
             const tip = document.getElementById('env-tip');
             const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
 
-            // 针对 iOS 非 Safari 环境的按钮显示优化
             if (isIos && isMobile && !isStandalone && !isSafari) {
                 tip.innerText = "⚠️ 请复制网址并使用 Safari 浏览器打开";
             }
@@ -196,17 +227,15 @@
             pwaBtn.onclick = async () => {
                 if (isIos && isMobile) {
                     if (!isSafari) {
-                        // 【优化】iOS 非 Safari：弹出复制指引，点按钮即关闭
                         iosContent.innerHTML = `
                             <img src="/icon-192.png" style="width:60px; border-radius:14px; margin-bottom:15px;">
                             <h3 style="color:#333; margin-bottom:10px;">请使用 Safari 访问</h3>
-                            <p style="font-size:14px; color:#666; margin-bottom:20px;">由于系统限制，当前环境无法安装。请复制网址后切换至 Safari 访问。</p>
+                            <p style="font-size:14px; color:#666; margin-bottom:20px;">系统限制，当前环境无法安装。请复制网址后切换至 Safari 访问。</p>
                             <button style="background:#333; color:#fff; border:none; width:100%; padding:15px; border-radius:15px; font-weight:bold; margin-bottom:15px; cursor:pointer;" onclick="copyAndClose()">一键复制网址</button>
                             <button style="background:transparent; color:#999; border:none; width:100%; font-size:12px; cursor:pointer;" onclick="document.getElementById('ios-pwa-mask').style.display='none'">我知道了</button>
                         `;
                         iosMask.style.display = 'block';
                     } else {
-                        // iOS Safari 环境：显示详细安装步骤
                         iosContent.innerHTML = `
                             <img src="/icon-192.png" style="width:60px; border-radius:14px; margin-bottom:15px;">
                             <h3 style="color:#333; margin-bottom:15px;">安装 99ASMR 到桌面</h3>
@@ -220,17 +249,14 @@
                         iosMask.style.display = 'block';
                     }
                 } else if (deferredPrompt) {
-                    // 电脑端/安卓 Chrome 逻辑：唤起原生安装，不弹窗
                     deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    if (outcome === 'accepted') deferredPrompt = null;
                 } else {
-                    alert("请在 Chrome/Edge 浏览器菜单中选择 [安装应用] 或 [添加到桌面]");
+                    alert("请在浏览器菜单中选择 [安装应用] 或 [添加到桌面]");
                 }
             };
         };
 
-        // 星空背景逻辑
+        // 星空绘制
         const canvas = document.getElementById('starCanvas');
         const ctx = canvas.getContext('2d');
         let w, h, stars = [];
